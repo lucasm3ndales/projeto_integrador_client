@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form'
 import { Eye, EyeOff } from 'lucide-react'
 import { saveUser } from '@/services/userService'
 import { AxiosError, AxiosResponse } from 'axios'
-import { toast } from 'react-toastify'
+import { toast } from 'sonner'
 
 interface RegisterForm extends UserDTO {
     pwdConfirm: string
@@ -48,21 +48,33 @@ export function Register() {
         saveUser(dto)
             .then((res: AxiosResponse<string>) => {
                 //console.log(res)
-                toast(res.data as string, { type: 'success' })
+                toast.success(res?.data as string, {
+                    className:
+                        'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                    duration: 3000
+                })                
                 navigate({ to: '/' })
             })
             .catch((err: AxiosError) => {
                 //console.log(err)
                 if (err?.response?.status === (400 || 403)) {
-                    toast(err?.response?.data as string, { type: 'warning' })
+                    toast.error(err?.response?.data as string, {
+                        className:
+                            'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                        duration: 3000
+                    })
                 } else {
-                    toast(err?.response?.data as string, { type: 'error' })
+                    toast.error(err?.response?.data as string, {
+                        className:
+                            'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                        duration: 3000
+                    })
                 }
             })
     }
     return (
         <main className='flex flex-col items-center'>
-            <div className='mt-5 flex h-auto w-full justify-center rounded-md bg-background px-4 py-6 dark:border-dark-tertiary dark:bg-dark-background md:w-3/5 md:border md:border-tertiary md:shadow-lg lg:w-1/2'>
+            <div className='mt-5 flex h-auto w-full justify-center rounded-md bg-background px-4 py-6 dark:border-dark-tertiary dark:bg-dark-background md:w-2/3 md:border md:border-tertiary md:shadow-lg lg:w-3/5'>
                 <div className='flex h-auto w-full flex-col items-center'>
                     <div className='mb-12 flex w-full justify-center text-2xl font-bold text-primary dark:text-dark-primary'>
                         <div className='flex flex-col'>
@@ -72,15 +84,15 @@ export function Register() {
                         <span className='flex-grow' />
                         <ToggleTheme width='8' height='8' />
                     </div>
-                    <div className='flex w-full'>
-                        <div className='flex w-2/5 flex-col items-center justify-center text-3xl font-bold text-primary dark:text-dark-primary'>
+                    <div className='flex md:flex-row flex-col space-y-8 w-full'>
+                        <div className='flex w-full md:w-2/5 md:flex-col items-center justify-center text-3xl font-bold text-primary dark:text-dark-primary'>
                             LOGO
                         </div>
-                        <div className='flex w-3/5 flex-col items-center justify-center'>
+                        <div className='flex w-full md:w-3/5 md:flex-col items-center justify-center'>
                             <form
                                 onSubmit={handleSubmit(registration)}
                                 method='POST'
-                                className='w-full space-y-3 lg:w-3/4'
+                                className='w-full md:space-y-3 space-y-5 lg:max-w-96'
                             >
                                 <div className='w-auto'>
                                     <Input
@@ -277,7 +289,7 @@ export function Register() {
                             </form>
                         </div>
                     </div>
-                    <div className='lg:text-md mt-20 flex w-full text-lg font-semibold text-secondary  hover:text-primary hover:opacity-70 dark:text-dark-secondary dark:hover:text-dark-primary dark:hover:opacity-100'>
+                    <div className='lg:text-md mt-20 flex justify-center md:justify-start w-full text-lg font-semibold text-secondary  hover:text-primary hover:opacity-70 dark:text-dark-secondary dark:hover:text-dark-primary dark:hover:opacity-100'>
                         <Link to='/'>Já tem conta? Acessar</Link>
                     </div>
                 </div>

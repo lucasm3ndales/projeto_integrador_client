@@ -1,5 +1,4 @@
 import { useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
 import { AxiosError, AxiosResponse } from 'axios'
 import { Input } from '@nextui-org/input'
 import { Button } from '@nextui-org/button'
@@ -8,6 +7,7 @@ import { useStorage } from '@/hooks/storageHook'
 import { authenticate } from '@/services/authService'
 import { ToggleTheme } from '@/components/ThemeToggle'
 import { Link, useNavigate } from '@tanstack/react-router'
+import { toast } from 'sonner'
 
 export function Auth() {
     const {
@@ -31,28 +31,32 @@ export function Auth() {
             .catch((err: AxiosError) => {
                 //console.log(err)
                 if (err?.response?.status === (400 || 403)) {
-                    toast(err?.response?.data as string, { type: 'warning' })
+                    toast.error(err?.response?.data as string, {
+                        className:
+                            'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                        duration: 3000
+                    })
                 } else {
-                    toast(err?.response?.data as string, { type: 'error' })
+                    toast.error(err?.response?.data as string, {
+                        className:
+                            'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                        duration: 3000
+                    })
                 }
             })
     }
 
     return (
         <main className='flex flex-col items-center'>
-            <div className='flex justify-center lg:w-auto md:w-1/2 w-5/6 h-auto mt-36 px-6 py-8 md:border md:border-tertiary dark:border-dark-tertiary rounded-md md:shadow-lg bg-background dark:bg-dark-background'>
-                <div className='flex flex-col items-center w-full h-auto'>
-                    <div className='flex justify-center w-full text-primary dark:text-dark-primary font-bold text-2xl mb-12'>
+            <div className='mt-36 flex h-auto w-5/6 justify-center rounded-md bg-background px-6 py-8 dark:border-dark-tertiary dark:bg-dark-background md:w-1/2 md:border md:border-tertiary md:shadow-lg lg:w-auto'>
+                <div className='flex h-auto w-full flex-col items-center'>
+                    <div className='mb-12 flex w-full justify-center text-2xl font-bold text-primary dark:text-dark-primary'>
                         <span className='flex-grow' />
                         LOGO
                         <span className='flex-grow' />
                         <ToggleTheme width='8' height='8' />
                     </div>
-                    <form
-                        onSubmit={handleSubmit(authentication)}
-                        method='POST'
-                        className='space-y-8 lg:w-96 w-full'
-                    >
+                    <form onSubmit={handleSubmit(authentication)} method='POST' className='w-full space-y-8 lg:w-96'>
                         <div className='w-auto'>
                             <Input
                                 label='Nome de usuário'
@@ -60,7 +64,9 @@ export function Auth() {
                                 variant='bordered'
                                 radius='md'
                                 isInvalid={errors?.username && 'Input-error' ? true : false}
-                                {...register('username')}
+                                {...register('username', {
+                                    required: true
+                                })}
                             />
                         </div>
                         <div className='w-auto'>
@@ -71,21 +77,23 @@ export function Auth() {
                                 radius='md'
                                 type='password'
                                 isInvalid={errors?.password && 'Input-error' ? true : false}
-                                {...register('password')}
+                                {...register('password', {
+                                    required: true
+                                })}
                             />
                         </div>
-                        <div className='text-center w-full'>
+                        <div className='w-full text-center'>
                             <Button
                                 type='submit'
                                 size='lg'
                                 radius='md'
-                                className='w-1/2 font-semibold text-background dark:text-dark-secondary bg-primary dark:bg-dark-primary'
+                                className='w-1/2 bg-primary font-semibold text-background dark:bg-dark-primary dark:text-dark-secondary'
                             >
                                 Entrar
                             </Button>
                         </div>
                     </form>
-                    <div className='flex mt-20 lg:text-md text-lg font-semibold text-secondary  dark:text-dark-secondary hover:text-primary hover:opacity-70 dark:hover:opacity-100 dark:hover:text-dark-primary'>
+                    <div className='lg:text-md mt-20 flex text-lg font-semibold text-secondary  hover:text-primary hover:opacity-70 dark:text-dark-secondary dark:hover:text-dark-primary dark:hover:opacity-100'>
                         <Link to='/register'>Não tem conta? Registre-se</Link>
                     </div>
                 </div>

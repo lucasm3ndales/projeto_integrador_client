@@ -22,7 +22,7 @@ export function Register() {
         getValues
     } = useForm<RegisterForm>()
 
-    const navigate = useNavigate({ from: '/register' })
+    const navigate = useNavigate()
 
     const [isVisible, setIsVisible] = useState<boolean>(false)
 
@@ -82,7 +82,7 @@ export function Register() {
                             <p className='text-sm'>Campos obrigatórios*</p>
                         </div>
                         <span className='flex-grow' />
-                        <ToggleTheme width='8' height='8' />
+                        <ToggleTheme width='8' height='8' lightColor='text-primary' darkColor='text-dark-primary' />
                     </div>
                     <div className='flex md:flex-row flex-col space-y-8 w-full'>
                         <div className='flex w-full md:w-2/5 md:flex-col items-center justify-center text-3xl font-bold text-primary dark:text-dark-primary'>

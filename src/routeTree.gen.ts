@@ -15,7 +15,7 @@ import { Route as RegisterImport } from './routes/register'
 import { Route as ModuleImport } from './routes/module'
 import { Route as ServantImport } from './routes/_servant'
 import { Route as IndexImport } from './routes/index'
-import { Route as ServantServidorImport } from './routes/_servant/servidor'
+import { Route as ServantServantImport } from './routes/_servant/servant'
 
 // Create/Update Routes
 
@@ -39,8 +39,8 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const ServantServidorRoute = ServantServidorImport.update({
-  path: '/servidor',
+const ServantServantRoute = ServantServantImport.update({
+  path: '/servant',
   getParentRoute: () => ServantRoute,
 } as any)
 
@@ -64,8 +64,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterImport
       parentRoute: typeof rootRoute
     }
-    '/_servant/servidor': {
-      preLoaderRoute: typeof ServantServidorImport
+    '/_servant/servant': {
+      preLoaderRoute: typeof ServantServantImport
       parentRoute: typeof ServantImport
     }
   }
@@ -75,7 +75,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
-  ServantRoute.addChildren([ServantServidorRoute]),
+  ServantRoute.addChildren([ServantServantRoute]),
   ModuleRoute,
   RegisterRoute,
 ])

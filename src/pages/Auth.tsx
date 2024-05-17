@@ -8,6 +8,7 @@ import { authenticate } from '@/services/authService'
 import { ToggleTheme } from '@/components/ThemeToggle'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
+import { motion } from 'framer-motion'
 
 export function Auth() {
     const {
@@ -16,7 +17,7 @@ export function Auth() {
         formState: { errors }
     } = useForm<Credentials>()
     const { saveUser, user } = useStorage()
-    const navigate = useNavigate({ from: '/' })
+    const navigate = useNavigate()
 
     const authentication = (credentials: Credentials) => {
         authenticate(credentials)
@@ -30,7 +31,14 @@ export function Auth() {
             })
             .catch((err: AxiosError) => {
                 //console.log(err)
-                if (err?.response?.status === (400 || 403)) {
+                if (err?.request?.status === 0) {
+                    toast.error('Conexão com o servidor perdida!', {
+                        className:
+                            'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                        duration: 3000,
+                        description: 'Verifique sua conexão com a internet.'
+                    })
+                } else if (err?.response?.status === (400 || 403)) {
                     toast.error(err?.response?.data as string, {
                         className:
                             'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
@@ -54,16 +62,24 @@ export function Auth() {
                         <span className='flex-grow' />
                         LOGO
                         <span className='flex-grow' />
-                        <ToggleTheme width='8' height='8' />
+                        <ToggleTheme classIcon='w-8 h-8' />
                     </div>
-                    <form onSubmit={handleSubmit(authentication)} method='POST' className='w-full space-y-8 lg:w-96'>
+                    <form
+                        onSubmit={handleSubmit(authentication)}
+                        method='POST'
+                        className='w-full space-y-8 lg:w-96'
+                    >
                         <div className='w-auto'>
                             <Input
                                 label='Nome de usuário'
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                isInvalid={errors?.username && 'Input-error' ? true : false}
+                                isInvalid={
+                                    errors?.username && 'Input-error'
+                                        ? true
+                                        : false
+                                }
                                 {...register('username', {
                                     required: true
                                 })}
@@ -76,7 +92,11 @@ export function Auth() {
                                 variant='bordered'
                                 radius='md'
                                 type='password'
-                                isInvalid={errors?.password && 'Input-error' ? true : false}
+                                isInvalid={
+                                    errors?.password && 'Input-error'
+                                        ? true
+                                        : false
+                                }
                                 {...register('password', {
                                     required: true
                                 })}
@@ -93,9 +113,13 @@ export function Auth() {
                             </Button>
                         </div>
                     </form>
-                    <div className='lg:text-md mt-20 flex text-lg font-semibold text-secondary  hover:text-primary hover:opacity-70 dark:text-dark-secondary dark:hover:text-dark-primary dark:hover:opacity-100'>
+                    <motion.div
+                        whileHover={{ scale: 1.0, y: -10 }}
+                        whileTap={{ scale: 0.95 }}
+                        className='lg:text-md mt-20 flex rounded-md border-tertiary p-1 text-lg font-semibold text-secondary hover:border hover:text-primary  dark:border-dark-tertiary dark:text-dark-secondary dark:hover:text-dark-primary dark:hover:opacity-100'
+                    >
                         <Link to='/register'>Não tem conta? Registre-se</Link>
-                    </div>
+                    </motion.div>
                 </div>
             </div>
         </main>

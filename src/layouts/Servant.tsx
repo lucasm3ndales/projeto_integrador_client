@@ -12,13 +12,41 @@ import {
     LogOut,
     Menu
 } from 'lucide-react'
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { color, motion, useAnimationControls } from 'framer-motion'
+
+const containerVariants = {
+    close: {
+        width: '5rem',
+        transition: {
+            type: 'spring',
+            damping: 15,
+            duration: 1
+        }
+    },
+    open: {
+        width: '11rem',
+        transition: {
+            type: 'spring',
+            damping: 15,
+            duration: 0.5
+        }
+    }
+}
 
 export function Servant() {
     const { user, removeUser } = useStorage()
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState<boolean>(false)
+    const containerControls = useAnimationControls()
+
+    useEffect(() => {
+        if (isOpen) {
+            containerControls.start('open')
+        } else {
+            containerControls.start('close')
+        }
+    }, [isOpen])
 
     const logout = () => {
         if (user) {
@@ -51,19 +79,17 @@ export function Servant() {
 
             {isOpen && (
                 <motion.div
-                    initial={{width: 0}}
-                    animate={{ width: 176 }}
-                    exit={{ width: 0 }}
                     className='fixed z-50 flex h-screen w-44 flex-col space-y-6 border-e border-tertiary bg-background px-2 py-4 dark:border-dark-tertiary dark:bg-dark-background lg:hidden'
+                    variants={containerVariants}
+                    initial='close'
+                    animate={containerControls}
                 >
-                    <div 
-                        
-                        className='mb-8 flex items-center justify-between p-1'>
+                    <div className='mb-8 flex items-center justify-between p-1'>
                         <div className='p-1 text-2xl font-bold text-primary dark:text-dark-primary'>
                             Logo
                         </div>
                         <CircleX
-                            className='h-6 w-6 text-secondary hover:text-primary dark:text-dark-secondary dark:hover:text-dark-primary'
+                            className='h-6 w-6 cursor-pointer text-secondary hover:text-primary dark:text-dark-secondary dark:hover:text-dark-primary'
                             onClick={() => setIsOpen(false)}
                         />
                     </div>
@@ -73,7 +99,7 @@ export function Servant() {
                             Início
                         </div>
                     </Link>
-                    <Link to='/events'>
+                    <Link to='/event'>
                         <div className='text-md itens-center flex h-auto w-auto rounded-md bg-transparent p-1 font-semibold text-secondary hover:bg-tertiary hover:bg-opacity-5 hover:text-primary dark:text-dark-secondary dark:hover:bg-dark-tertiary dark:hover:text-dark-primary'>
                             <BookMarked className='me-3 h-6 w-6' />
                             Eventos
@@ -126,40 +152,68 @@ export function Servant() {
                     <Tooltip
                         content='Início'
                         placement='right-end'
-                        color='default'
+                        classNames={{
+                            base: [
+                                'text-secondary dark:text-dark-secondary'
+                            ],
+                            content: [
+                                'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background'
+                            ]
+                        }}
                     >
                         <div className='h-auto w-auto rounded-md bg-transparent p-1 hover:bg-tertiary hover:bg-opacity-5 dark:hover:bg-dark-tertiary'>
                             <Home className='h-8 w-8 text-secondary hover:text-primary dark:text-dark-secondary dark:hover:text-dark-primary' />
                         </div>
                     </Tooltip>
                 </Link>
-                <Link to='/events'>
+                <Link to='/event'>
                     <Tooltip
                         content='Eventos'
                         placement='right-end'
-                        color='default'
+                        classNames={{
+                            base: [
+                                'text-secondary dark:text-dark-secondary'
+                            ],
+                            content: [
+                                'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background'
+                            ]
+                        }}
                     >
                         <div className='h-auto w-auto rounded-md bg-transparent p-1 hover:bg-tertiary hover:bg-opacity-5 dark:hover:bg-dark-tertiary'>
                             <BookMarked className='h-8 w-8 text-secondary hover:text-primary dark:text-dark-secondary dark:hover:text-dark-primary' />
                         </div>
                     </Tooltip>
                 </Link>
-                <Link to='/expenses'>
+                <Link to='/expense'>
                     <Tooltip
                         content='Despesas'
                         placement='right-end'
-                        color='default'
+                        classNames={{
+                            base: [
+                                'text-secondary dark:text-dark-secondary'
+                            ],
+                            content: [
+                                'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background'
+                            ]
+                        }}
                     >
                         <div className='h-auto w-auto rounded-md bg-transparent p-1 hover:bg-tertiary hover:bg-opacity-5 dark:hover:bg-dark-tertiary'>
                             <HandCoins className='h-8 w-8 text-secondary hover:text-primary dark:text-dark-secondary dark:hover:text-dark-primary' />
                         </div>
                     </Tooltip>
                 </Link>
-                <Link to='/departaments'>
+                <Link to='/departament'>
                     <Tooltip
                         content='Departamentos'
                         placement='right-end'
-                        color='default'
+                        classNames={{
+                            base: [
+                                'text-secondary dark:text-dark-secondary'
+                            ],
+                            content: [
+                                'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background'
+                            ]
+                        }}
                     >
                         <div className='h-auto w-auto rounded-md bg-transparent p-1 hover:bg-tertiary hover:bg-opacity-5 dark:hover:bg-dark-tertiary'>
                             <Component className='h-8 w-8 text-secondary hover:text-primary dark:text-dark-secondary dark:hover:text-dark-primary' />
@@ -170,7 +224,14 @@ export function Servant() {
                 <Tooltip
                     content='Tema escuro/claro'
                     placement='right-end'
-                    color='default'
+                    classNames={{
+                        base: [
+                            'text-secondary dark:text-dark-secondary'
+                        ],
+                        content: [
+                            'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background'
+                        ]
+                    }}
                 >
                     <div className='items-centerw-auto flex h-auto rounded-md bg-transparent p-1 hover:bg-tertiary hover:bg-opacity-5 dark:hover:bg-dark-tertiary'>
                         <ToggleTheme classIcon='w-8 h-8 text-secondary hover:text-primary dark:text-dark-secondary dark:hover:text-dark-primary' />
@@ -180,14 +241,32 @@ export function Servant() {
                     <Tooltip
                         content='Usuário'
                         placement='right-end'
-                        color='default'
+                        classNames={{
+                            base: [
+                                'text-secondary dark:text-dark-secondary'
+                            ],
+                            content: [
+                                'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background'
+                            ]
+                        }}
                     >
                         <div className='h-auto w-auto rounded-md bg-transparent p-1 hover:bg-tertiary hover:bg-opacity-5 dark:hover:bg-dark-tertiary'>
                             <CircleUserRound className='h-8 w-8 text-secondary hover:text-primary dark:text-dark-secondary dark:hover:text-dark-primary' />
                         </div>
                     </Tooltip>
                 </Link>
-                <Tooltip content='Sair' placement='right-end' color='default'>
+                <Tooltip
+                    content='Sair'
+                    placement='right-end'
+                    classNames={{
+                        base: [
+                            'text-secondary dark:text-dark-secondary'
+                        ],
+                        content: [
+                            'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background'
+                        ]
+                    }}
+                >
                     <div className='h-auto w-auto rounded-md bg-transparent p-1 hover:bg-tertiary hover:bg-opacity-5 dark:hover:bg-dark-tertiary'>
                         <LogOut
                             className='h-8 w-8 text-secondary hover:text-primary dark:text-dark-secondary dark:hover:text-dark-primary'

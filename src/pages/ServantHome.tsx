@@ -12,7 +12,7 @@ export function ServantHome() {
                 Seja Bem Vindo!
             </div>
             <div className='flex flex-col space-y-8 md:flex-row md:space-x-10 md:space-y-0'>
-                <Link to='/events'>
+                <Link to='/event'>
                     <motion.div
                         whileHover={{ scale: 1.08, y: -10 }}
                         whileTap={{ scale: 0.95 }}
@@ -24,7 +24,7 @@ export function ServantHome() {
                         <span>Eventos</span>
                     </motion.div>
                 </Link>
-                <Link to='/expenses'>
+                <Link to='/expense'>
                     <motion.div
                         whileHover={{ scale: 1.08, y: -10 }}
                         whileTap={{ scale: 0.95 }}
@@ -36,7 +36,7 @@ export function ServantHome() {
                         <span>Despesas</span>
                     </motion.div>
                 </Link>
-                <Link to='/departaments'>
+                <Link to='/departament'>
                     <motion.div
                         whileHover={{ scale: 1.08, y: -10 }}
                         whileTap={{ scale: 0.95 }}

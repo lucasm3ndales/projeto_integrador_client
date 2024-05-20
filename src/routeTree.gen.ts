@@ -16,6 +16,9 @@ import { Route as ModuleImport } from './routes/module'
 import { Route as ServantImport } from './routes/_servant'
 import { Route as IndexImport } from './routes/index'
 import { Route as ServantServantImport } from './routes/_servant/servant'
+import { Route as ServantExpenseImport } from './routes/_servant/expense'
+import { Route as ServantEventImport } from './routes/_servant/event'
+import { Route as ServantDepartamentImport } from './routes/_servant/departament'
 
 // Create/Update Routes
 
@@ -44,6 +47,21 @@ const ServantServantRoute = ServantServantImport.update({
   getParentRoute: () => ServantRoute,
 } as any)
 
+const ServantExpenseRoute = ServantExpenseImport.update({
+  path: '/expense',
+  getParentRoute: () => ServantRoute,
+} as any)
+
+const ServantEventRoute = ServantEventImport.update({
+  path: '/event',
+  getParentRoute: () => ServantRoute,
+} as any)
+
+const ServantDepartamentRoute = ServantDepartamentImport.update({
+  path: '/departament',
+  getParentRoute: () => ServantRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -64,6 +82,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterImport
       parentRoute: typeof rootRoute
     }
+    '/_servant/departament': {
+      preLoaderRoute: typeof ServantDepartamentImport
+      parentRoute: typeof ServantImport
+    }
+    '/_servant/event': {
+      preLoaderRoute: typeof ServantEventImport
+      parentRoute: typeof ServantImport
+    }
+    '/_servant/expense': {
+      preLoaderRoute: typeof ServantExpenseImport
+      parentRoute: typeof ServantImport
+    }
     '/_servant/servant': {
       preLoaderRoute: typeof ServantServantImport
       parentRoute: typeof ServantImport
@@ -75,7 +105,12 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
-  ServantRoute.addChildren([ServantServantRoute]),
+  ServantRoute.addChildren([
+    ServantDepartamentRoute,
+    ServantEventRoute,
+    ServantExpenseRoute,
+    ServantServantRoute,
+  ]),
   ModuleRoute,
   RegisterRoute,
 ])

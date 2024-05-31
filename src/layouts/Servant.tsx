@@ -1,5 +1,4 @@
 import { ToggleTheme } from '@/components/ThemeToggle'
-import { useStorage } from '@/hooks/storageHook'
 import { Tooltip } from '@nextui-org/tooltip'
 import { Link, Outlet, useNavigate } from '@tanstack/react-router'
 import {
@@ -10,10 +9,13 @@ import {
     HandCoins,
     Home,
     LogOut,
-    Menu
+    Menu,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { color, motion, useAnimationControls } from 'framer-motion'
+import { motion, useAnimationControls } from 'framer-motion'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '@/store'
+import { clearUser } from '@/store/userStore'
 
 const containerVariants = {
     close: {
@@ -21,21 +23,22 @@ const containerVariants = {
         transition: {
             type: 'spring',
             damping: 15,
-            duration: 1
-        }
+            duration: 1,
+        },
     },
     open: {
         width: '11rem',
         transition: {
             type: 'spring',
             damping: 15,
-            duration: 0.5
-        }
-    }
+            duration: 0.5,
+        },
+    },
 }
 
 export function Servant() {
-    const { user, removeUser } = useStorage()
+    const user = useSelector((state: RootState) => state.user.user)
+    const dispatch = useDispatch()
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const containerControls = useAnimationControls()
@@ -50,7 +53,7 @@ export function Servant() {
 
     const logout = () => {
         if (user) {
-            removeUser()
+            dispatch(clearUser())
             navigate({ to: '/' })
         }
     }
@@ -153,12 +156,10 @@ export function Servant() {
                         content='Início'
                         placement='right-end'
                         classNames={{
-                            base: [
-                                'text-secondary dark:text-dark-secondary'
-                            ],
+                            base: ['text-secondary dark:text-dark-secondary'],
                             content: [
-                                'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background'
-                            ]
+                                'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background',
+                            ],
                         }}
                     >
                         <div className='h-auto w-auto rounded-md bg-transparent p-1 hover:bg-tertiary hover:bg-opacity-5 dark:hover:bg-dark-tertiary'>
@@ -171,12 +172,10 @@ export function Servant() {
                         content='Eventos'
                         placement='right-end'
                         classNames={{
-                            base: [
-                                'text-secondary dark:text-dark-secondary'
-                            ],
+                            base: ['text-secondary dark:text-dark-secondary'],
                             content: [
-                                'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background'
-                            ]
+                                'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background',
+                            ],
                         }}
                     >
                         <div className='h-auto w-auto rounded-md bg-transparent p-1 hover:bg-tertiary hover:bg-opacity-5 dark:hover:bg-dark-tertiary'>
@@ -189,12 +188,10 @@ export function Servant() {
                         content='Despesas'
                         placement='right-end'
                         classNames={{
-                            base: [
-                                'text-secondary dark:text-dark-secondary'
-                            ],
+                            base: ['text-secondary dark:text-dark-secondary'],
                             content: [
-                                'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background'
-                            ]
+                                'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background',
+                            ],
                         }}
                     >
                         <div className='h-auto w-auto rounded-md bg-transparent p-1 hover:bg-tertiary hover:bg-opacity-5 dark:hover:bg-dark-tertiary'>
@@ -207,12 +204,10 @@ export function Servant() {
                         content='Departamentos'
                         placement='right-end'
                         classNames={{
-                            base: [
-                                'text-secondary dark:text-dark-secondary'
-                            ],
+                            base: ['text-secondary dark:text-dark-secondary'],
                             content: [
-                                'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background'
-                            ]
+                                'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background',
+                            ],
                         }}
                     >
                         <div className='h-auto w-auto rounded-md bg-transparent p-1 hover:bg-tertiary hover:bg-opacity-5 dark:hover:bg-dark-tertiary'>
@@ -225,12 +220,10 @@ export function Servant() {
                     content='Tema escuro/claro'
                     placement='right-end'
                     classNames={{
-                        base: [
-                            'text-secondary dark:text-dark-secondary'
-                        ],
+                        base: ['text-secondary dark:text-dark-secondary'],
                         content: [
-                            'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background'
-                        ]
+                            'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background',
+                        ],
                     }}
                 >
                     <div className='items-centerw-auto flex h-auto rounded-md bg-transparent p-1 hover:bg-tertiary hover:bg-opacity-5 dark:hover:bg-dark-tertiary'>
@@ -242,12 +235,10 @@ export function Servant() {
                         content='Usuário'
                         placement='right-end'
                         classNames={{
-                            base: [
-                                'text-secondary dark:text-dark-secondary'
-                            ],
+                            base: ['text-secondary dark:text-dark-secondary'],
                             content: [
-                                'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background'
-                            ]
+                                'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background',
+                            ],
                         }}
                     >
                         <div className='h-auto w-auto rounded-md bg-transparent p-1 hover:bg-tertiary hover:bg-opacity-5 dark:hover:bg-dark-tertiary'>
@@ -259,12 +250,10 @@ export function Servant() {
                     content='Sair'
                     placement='right-end'
                     classNames={{
-                        base: [
-                            'text-secondary dark:text-dark-secondary'
-                        ],
+                        base: ['text-secondary dark:text-dark-secondary'],
                         content: [
-                            'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background'
-                        ]
+                            'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background',
+                        ],
                     }}
                 >
                     <div className='h-auto w-auto rounded-md bg-transparent p-1 hover:bg-tertiary hover:bg-opacity-5 dark:hover:bg-dark-tertiary'>

@@ -3,52 +3,56 @@ import { AxiosError, AxiosResponse } from 'axios'
 import { Input } from '@nextui-org/input'
 import { Button } from '@nextui-org/button'
 import { AuthDTO, Credentials } from '@/models/user'
-import { useStorage } from '@/hooks/storageHook'
 import { authenticate } from '@/services/authService'
 import { ToggleTheme } from '@/components/ThemeToggle'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '@/store'
+import { clearUser, setUser } from '@/store/userStore'
 
 export function Auth() {
     const {
         register,
         handleSubmit,
-        formState: { errors }
+        formState: { errors },
     } = useForm<Credentials>()
-    const { saveUser, user } = useStorage()
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const user = useSelector((state: RootState) => state.user.user)
+
 
     const authentication = (credentials: Credentials) => {
+        dispatch(clearUser())
         authenticate(credentials)
             .then((res: AxiosResponse<AuthDTO>) => {
-                //console.log(res)
-                saveUser(res.data)
+                dispatch(setUser(res.data))
 
                 if (user) {
                     navigate({ to: '/module' })
                 }
             })
             .catch((err: AxiosError) => {
-                //console.log(err)
+                console.log(err)
                 if (err?.request?.status === 0) {
                     toast.error('Conexão com o servidor perdida!', {
                         className:
                             'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
                         duration: 3000,
-                        description: 'Verifique sua conexão com a internet.'
+                        description: 'Verifique sua conexão com a internet.',
                     })
                 } else if (err?.response?.status === (400 || 403)) {
                     toast.error(err?.response?.data as string, {
                         className:
                             'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
-                        duration: 3000
+                        duration: 3000,
                     })
                 } else {
-                    toast.error(err?.response?.data as string, {
+                    toast.error(err?.response?.data as string || 'Erro interno do servidor!', {
                         className:
                             'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
-                        duration: 3000
+                        duration: 3000,
                     })
                 }
             })
@@ -81,8 +85,21 @@ export function Auth() {
                                         : false
                                 }
                                 {...register('username', {
-                                    required: true
+                                    required: true,
                                 })}
+                                classNames={{
+                                    input: ['bg-transparent'],
+                                    label: [
+                                        'text-secondary dark:text-dark-secondary',
+                                    ],
+                                    inputWrapper: [
+                                        'text-secondary dark:text-dark-secondary hover:text-primary dark:hover:text-dark-primary bg-transparent border border-tertiary dark:border-dark-tertiary hover:border-primary dark:hover:border-dark-primary',
+                                    ],
+                                    description: [
+                                        'text-secondary dark:text-dark-secondary',
+                                    ],
+                                    errorMessage: ['text-error'],
+                                }}
                             />
                         </div>
                         <div className='w-auto'>
@@ -98,8 +115,21 @@ export function Auth() {
                                         : false
                                 }
                                 {...register('password', {
-                                    required: true
+                                    required: true,
                                 })}
+                                classNames={{
+                                    input: ['bg-transparent '],
+                                    label: [
+                                        'text-secondary dark:text-dark-secondary',
+                                    ],
+                                    inputWrapper: [
+                                        'text-secondary dark:text-dark-secondary hover:text-primary dark:hover:text-dark-primary bg-transparent border border-tertiary dark:border-dark-tertiary hover:border-primary dark:hover:border-dark-primary',
+                                    ],
+                                    description: [
+                                        'text-secondary dark:text-dark-secondary',
+                                    ],
+                                    errorMessage: ['text-error'],
+                                }}
                             />
                         </div>
                         <div className='w-full text-center'>

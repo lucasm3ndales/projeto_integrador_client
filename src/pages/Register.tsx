@@ -9,6 +9,7 @@ import { Eye, EyeOff } from 'lucide-react'
 import { saveUser } from '@/services/userService'
 import { AxiosError, AxiosResponse } from 'axios'
 import { toast } from 'sonner'
+import { motion } from 'framer-motion'
 
 interface RegisterForm extends UserDTO {
     pwdConfirm: string
@@ -19,19 +20,21 @@ export function Register() {
         register,
         handleSubmit,
         formState: { errors },
-        getValues
+        getValues,
     } = useForm<RegisterForm>()
 
     const navigate = useNavigate()
 
     const [isVisible, setIsVisible] = useState<boolean>(false)
 
-    const [emailRegex] = useState<RegExp>(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i)
+    const [emailRegex] = useState<RegExp>(
+        /^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i,
+    )
 
     const [siapeRegex] = useState<RegExp>(/^[0-9]{7}$/)
 
     const [phoneRegex] = useState<RegExp>(
-        /^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?(?:((?:9\d|[2-9])\d{3})-?(\d{4}))$/
+        /^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?(?:((?:9\d|[2-9])\d{3})-?(\d{4}))$/,
     )
 
     const checkPass = () => {
@@ -47,27 +50,25 @@ export function Register() {
     const registration = (dto: UserDTO) => {
         saveUser(dto)
             .then((res: AxiosResponse<string>) => {
-                //console.log(res)
                 toast.success(res?.data as string, {
                     className:
                         'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
-                    duration: 3000
-                })                
+                    duration: 3000,
+                })
                 navigate({ to: '/' })
             })
             .catch((err: AxiosError) => {
-                //console.log(err)
                 if (err?.response?.status === (400 || 403)) {
                     toast.error(err?.response?.data as string, {
                         className:
                             'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
-                        duration: 3000
+                        duration: 3000,
                     })
                 } else {
                     toast.error(err?.response?.data as string, {
                         className:
                             'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
-                        duration: 3000
+                        duration: 3000,
                     })
                 }
             })
@@ -78,21 +79,23 @@ export function Register() {
                 <div className='flex h-auto w-full flex-col items-center'>
                     <div className='mb-12 flex w-full justify-center text-2xl font-bold text-primary dark:text-dark-primary'>
                         <div className='flex flex-col'>
-                            <h2 className='text-secondary dark:text-dark-secondary'>Registro de Usuário</h2>
+                            <h2 className='text-secondary dark:text-dark-secondary'>
+                                Registro de Usuário
+                            </h2>
                             <p className='text-sm'>Campos obrigatórios*</p>
                         </div>
                         <span className='flex-grow' />
-                        <ToggleTheme width='8' height='8' lightColor='text-primary' darkColor='text-dark-primary' />
+                        <ToggleTheme classIcon='w-8 h-8 text-primary dark:text-dark-primary' />
                     </div>
-                    <div className='flex md:flex-row flex-col space-y-8 w-full'>
-                        <div className='flex w-full md:w-2/5 md:flex-col items-center justify-center text-3xl font-bold text-primary dark:text-dark-primary'>
+                    <div className='flex w-full flex-col space-y-8 md:flex-row'>
+                        <div className='flex w-full items-center justify-center text-3xl font-bold text-primary dark:text-dark-primary md:w-2/5 md:flex-col'>
                             LOGO
                         </div>
-                        <div className='flex w-full md:w-3/5 md:flex-col items-center justify-center'>
+                        <div className='flex w-full items-center justify-center md:w-3/5 md:flex-col'>
                             <form
                                 onSubmit={handleSubmit(registration)}
                                 method='POST'
-                                className='w-full md:space-y-3 space-y-5 lg:max-w-96'
+                                className='w-full space-y-5 md:space-y-3 lg:max-w-96'
                             >
                                 <div className='w-auto'>
                                     <Input
@@ -100,18 +103,35 @@ export function Register() {
                                         size='sm'
                                         variant='bordered'
                                         radius='md'
-                                        isInvalid={errors?.name && 'Input-error' ? true : false}
+                                        isInvalid={
+                                            errors?.name && 'Input-error'
+                                                ? true
+                                                : false
+                                        }
                                         errorMessage={errors?.name?.message}
                                         {...register('name', {
                                             required: {
                                                 value: true,
-                                                message: 'Nome obrigatório!'
+                                                message: 'Nome obrigatório!',
                                             },
                                             minLength: {
                                                 value: 2,
-                                                message: 'Nome muito curto!'
-                                            }
+                                                message: 'Nome muito curto!',
+                                            },
                                         })}
+                                        classNames={{
+                                            input: ['bg-transparent '],
+                                            label: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                            inputWrapper: [
+                                                'text-secondary dark:text-dark-secondary hover:text-primary dark:hover:text-dark-primary bg-transparent border border-tertiary dark:border-dark-tertiary hover:border-primary dark:hover:border-dark-primary',
+                                            ],
+                                            description: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                            errorMessage: ['text-error'],
+                                        }}
                                     />
                                 </div>
                                 <div className='w-auto'>
@@ -121,18 +141,36 @@ export function Register() {
                                         variant='bordered'
                                         radius='md'
                                         type='email'
-                                        isInvalid={errors?.email && 'Input-error' ? true : false}
+                                        isInvalid={
+                                            errors?.email && 'Input-error'
+                                                ? true
+                                                : false
+                                        }
                                         errorMessage={errors?.email?.message}
                                         {...register('email', {
                                             required: {
                                                 value: true,
-                                                message: 'E-mail obrigatório!'
+                                                message: 'E-mail obrigatório!',
                                             },
                                             pattern: {
                                                 value: emailRegex,
-                                                message: 'Formato de e-mail inválido!'
-                                            }
+                                                message:
+                                                    'Formato de e-mail inválido!',
+                                            },
                                         })}
+                                        classNames={{
+                                            input: ['bg-transparent '],
+                                            label: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                            inputWrapper: [
+                                                'text-secondary dark:text-dark-secondary hover:text-primary dark:hover:text-dark-primary bg-transparent border border-tertiary dark:border-dark-tertiary hover:border-primary dark:hover:border-dark-primary',
+                                            ],
+                                            description: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                            errorMessage: ['text-error'],
+                                        }}
                                     />
                                 </div>
                                 <div className='w-auto'>
@@ -142,26 +180,47 @@ export function Register() {
                                         variant='bordered'
                                         radius='md'
                                         maxLength={11}
-                                        isInvalid={errors?.phone && 'Input-error' ? true : false}
+                                        isInvalid={
+                                            errors?.phone && 'Input-error'
+                                                ? true
+                                                : false
+                                        }
                                         errorMessage={errors?.phone?.message}
                                         {...register('phone', {
                                             required: {
                                                 value: true,
-                                                message: 'Telefone obrigatório!'
+                                                message:
+                                                    'Telefone obrigatório!',
                                             },
                                             pattern: {
                                                 value: phoneRegex,
-                                                message: 'Formato de telefone inválido!'
+                                                message:
+                                                    'Formato de telefone inválido!',
                                             },
                                             minLength: {
                                                 value: 11,
-                                                message: 'Telefone dever ter onze dígitos!'
+                                                message:
+                                                    'Telefone dever ter onze dígitos!',
                                             },
                                             maxLength: {
                                                 value: 11,
-                                                message: 'Telefone dever ter onze dígitos!'
-                                            }
+                                                message:
+                                                    'Telefone dever ter onze dígitos!',
+                                            },
                                         })}
+                                        classNames={{
+                                            input: ['bg-transparent '],
+                                            label: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                            inputWrapper: [
+                                                'text-secondary dark:text-dark-secondary hover:text-primary dark:hover:text-dark-primary bg-transparent border border-tertiary dark:border-dark-tertiary hover:border-primary dark:hover:border-dark-primary',
+                                            ],
+                                            description: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                            errorMessage: ['text-error'],
+                                        }}
                                     />
                                 </div>
                                 <div className='w-auto'>
@@ -171,26 +230,47 @@ export function Register() {
                                         variant='bordered'
                                         radius='md'
                                         maxLength={7}
-                                        isInvalid={errors?.siape && 'Input-error' ? true : false}
+                                        isInvalid={
+                                            errors?.siape && 'Input-error'
+                                                ? true
+                                                : false
+                                        }
                                         errorMessage={errors?.siape?.message}
                                         {...register('siape', {
                                             required: {
                                                 value: true,
-                                                message: 'Matrícula obrigatória!'
+                                                message:
+                                                    'Matrícula obrigatória!',
                                             },
                                             pattern: {
                                                 value: siapeRegex,
-                                                message: 'Formato de matrícula inválido!'
+                                                message:
+                                                    'Formato de matrícula inválido!',
                                             },
                                             minLength: {
                                                 value: 7,
-                                                message: 'Matrícula dever ter sete dígitos!'
+                                                message:
+                                                    'Matrícula dever ter sete dígitos!',
                                             },
                                             maxLength: {
                                                 value: 7,
-                                                message: 'Matrícula dever ter sete dígitos!'
-                                            }
+                                                message:
+                                                    'Matrícula dever ter sete dígitos!',
+                                            },
                                         })}
+                                        classNames={{
+                                            input: ['bg-transparent '],
+                                            label: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                            inputWrapper: [
+                                                'text-secondary dark:text-dark-secondary hover:text-primary dark:hover:text-dark-primary bg-transparent border border-tertiary dark:border-dark-tertiary hover:border-primary dark:hover:border-dark-primary',
+                                            ],
+                                            description: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                            errorMessage: ['text-error'],
+                                        }}
                                     />
                                 </div>
                                 <div className='w-auto'>
@@ -199,18 +279,37 @@ export function Register() {
                                         size='sm'
                                         variant='bordered'
                                         radius='md'
-                                        isInvalid={errors?.username && 'Input-error' ? true : false}
+                                        isInvalid={
+                                            errors?.username && 'Input-error'
+                                                ? true
+                                                : false
+                                        }
                                         errorMessage={errors?.username?.message}
                                         {...register('username', {
                                             required: {
                                                 value: true,
-                                                message: 'Nome de Usuário obrigatório!'
+                                                message:
+                                                    'Nome de Usuário obrigatório!',
                                             },
                                             minLength: {
                                                 value: 4,
-                                                message: 'Nome de Usuário muito curto!'
-                                            }
+                                                message:
+                                                    'Nome de Usuário muito curto!',
+                                            },
                                         })}
+                                        classNames={{
+                                            input: ['bg-transparent '],
+                                            label: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                            inputWrapper: [
+                                                'text-secondary dark:text-dark-secondary hover:text-primary dark:hover:text-dark-primary bg-transparent border border-tertiary dark:border-dark-tertiary hover:border-primary dark:hover:border-dark-primary',
+                                            ],
+                                            description: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                            errorMessage: ['text-error'],
+                                        }}
                                     />
                                 </div>
                                 <div className='w-auto'>
@@ -224,24 +323,45 @@ export function Register() {
                                             <button
                                                 type='button'
                                                 onClick={toggleIsVisible}
-                                                className='text-primary dark:text-dark-primary'
+                                                className='text-secondary hover:text-primary dark:text-dark-secondary dark:hover:text-dark-primary'
                                             >
-                                                {!isVisible && <EyeOff className='h-7 w-7' />}
-                                                {isVisible && <Eye className='h-7 w-7' />}
+                                                {!isVisible && (
+                                                    <EyeOff className='h-6 w-6' />
+                                                )}
+                                                {isVisible && (
+                                                    <Eye className='h-6 w-6' />
+                                                )}
                                             </button>
                                         }
-                                        isInvalid={errors?.password && 'Input-error' ? true : false}
+                                        isInvalid={
+                                            errors?.password && 'Input-error'
+                                                ? true
+                                                : false
+                                        }
                                         errorMessage={errors?.password?.message}
                                         {...register('password', {
                                             required: {
                                                 value: true,
-                                                message: 'Senha obrigatória!'
+                                                message: 'Senha obrigatória!',
                                             },
                                             minLength: {
                                                 value: 6,
-                                                message: 'Senha muito curta!'
-                                            }
+                                                message: 'Senha muito curta!',
+                                            },
                                         })}
+                                        classNames={{
+                                            input: ['bg-transparent '],
+                                            label: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                            inputWrapper: [
+                                                'text-secondary dark:text-dark-secondary hover:text-primary dark:hover:text-dark-primary bg-transparent border border-tertiary dark:border-dark-tertiary hover:border-primary dark:hover:border-dark-primary',
+                                            ],
+                                            description: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                            errorMessage: ['text-error'],
+                                        }}
                                     />
                                 </div>
                                 <div className='w-auto'>
@@ -255,25 +375,48 @@ export function Register() {
                                             <button
                                                 type='button'
                                                 onClick={toggleIsVisible}
-                                                className='text-primary dark:text-dark-primary'
+                                                className='text-secondary hover:text-primary dark:text-dark-secondary dark:hover:text-dark-primary'
                                             >
-                                                {!isVisible && <EyeOff className='h-7 w-7' />}
-                                                {isVisible && <Eye className='h-7 w-7' />}
+                                                {!isVisible && (
+                                                    <EyeOff className='h-6 w-6' />
+                                                )}
+                                                {isVisible && (
+                                                    <Eye className='h-6 w-6' />
+                                                )}
                                             </button>
                                         }
-                                        isInvalid={errors?.pwdConfirm && 'Input-error' ? true : false}
-                                        errorMessage={errors?.pwdConfirm?.message}
+                                        isInvalid={
+                                            errors?.pwdConfirm && 'Input-error'
+                                                ? true
+                                                : false
+                                        }
+                                        errorMessage={
+                                            errors?.pwdConfirm?.message
+                                        }
                                         {...register('pwdConfirm', {
                                             required: {
                                                 value: true,
-                                                message: 'Senha obrigatória!'
+                                                message: 'Senha obrigatória!',
                                             },
                                             minLength: {
                                                 value: 6,
-                                                message: 'Senha muito curta!'
+                                                message: 'Senha muito curta!',
                                             },
-                                            validate: checkPass
+                                            validate: checkPass,
                                         })}
+                                        classNames={{
+                                            input: ['bg-transparent '],
+                                            label: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                            inputWrapper: [
+                                                'text-secondary dark:text-dark-secondary hover:text-primary dark:hover:text-dark-primary bg-transparent border border-tertiary dark:border-dark-tertiary hover:border-primary dark:hover:border-dark-primary',
+                                            ],
+                                            description: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                            errorMessage: ['text-error'],
+                                        }}
                                     />
                                 </div>
                                 <div className='w-full text-center'>
@@ -289,8 +432,14 @@ export function Register() {
                             </form>
                         </div>
                     </div>
-                    <div className='lg:text-md mt-20 flex justify-center md:justify-start w-full text-lg font-semibold text-secondary  hover:text-primary hover:opacity-70 dark:text-dark-secondary dark:hover:text-dark-primary dark:hover:opacity-100'>
-                        <Link to='/'>Já tem conta? Acessar</Link>
+                    <div className='flex w-full justify-start'>
+                        <motion.div
+                            whileHover={{ scale: 1.0, y: -10 }}
+                            whileTap={{ scale: 0.95 }}
+                            className='lg:text-md mt-5 flex justify-start rounded-md border-tertiary p-1 text-lg font-semibold text-secondary hover:border hover:text-primary  dark:border-dark-tertiary dark:text-dark-secondary dark:hover:text-dark-primary dark:hover:opacity-100'
+                        >
+                            <Link to='/'>Já tem conta? Acessar</Link>
+                        </motion.div>
                     </div>
                 </div>
             </div>

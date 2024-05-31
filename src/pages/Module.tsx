@@ -1,10 +1,11 @@
 import { ToggleTheme } from '@/components/ThemeToggle'
-import { useStorage } from '@/hooks/storageHook'
 import { Role } from '@/models/user'
 import { Link } from '@tanstack/react-router'
 import { Component, Landmark, User } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { RootState } from '@/store'
+import { useSelector } from 'react-redux'
 
 export function Module() {
     const enabledStyle = `flex min-h-56 w-56 flex-col items-center justify-center space-y-4 rounded-md border 
@@ -14,7 +15,7 @@ export function Module() {
     const disabledStyle = `flex min-h-56 w-56 flex-col items-center justify-center space-y-4 rounded-md border 
         border-tertiary px-2 py-4 text-lg font-semibold text-secondary shadow-lg opacity-20`
 
-    const { user } = useStorage()
+    const user = useSelector((state: RootState) => state.user.user)
     const [disableDep, setDisableDep] = useState<boolean>(true)
     const [disableReit, setDisableReit] = useState<boolean>(true)
     const [styleDep, setStyleDep] = useState<string>(disabledStyle)
@@ -36,7 +37,7 @@ export function Module() {
         }
 
         checkUserTypeAndButtonStyle()
-    }, [])
+    })
 
     return (
         <main className='flex flex-col items-center'>
@@ -63,7 +64,9 @@ export function Module() {
                         </Link>
                         <Link to='/departament' disabled={disableDep}>
                             <motion.div
-                                whileHover={!disableDep ? { scale: 1.08, y: -10 } : {}}
+                                whileHover={
+                                    !disableDep ? { scale: 1.08, y: -10 } : {}
+                                }
                                 whileTap={!disableDep ? { scale: 0.95 } : {}}
                                 className={styleDep}
                             >
@@ -73,7 +76,9 @@ export function Module() {
                         </Link>
                         <Link to='/rectory' disabled={disableReit}>
                             <motion.div
-                                whileHover={!disableReit ? { scale: 1.08, y: -10 } : {}}
+                                whileHover={
+                                    !disableReit ? { scale: 1.08, y: -10 } : {}
+                                }
                                 whileTap={!disableReit ? { scale: 0.95 } : {}}
                                 className={styleReit}
                             >

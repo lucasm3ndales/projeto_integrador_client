@@ -2,3 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+    overflow-x: hidden;
+}
+
+.step-item {
+    @apply relative flex w-full flex-col items-center justify-center;
+}
+
+.step-item:not(:first-child):before {
+    @apply absolute right-2/4 top-1/3 h-[2px] md:h-[4px] w-full -translate-y-2/4 bg-tertiary content-['']  dark:bg-dark-tertiary;
+}
+
+.step {
+    @apply relative z-10 flex w-8 h-8 md:h-10 md:w-10 items-center justify-center rounded-full border 
+    border-tertiary bg-background text-lg font-semibold text-secondary dark:border-dark-tertiary 
+    dark:bg-dark-background dark:text-dark-secondary;
+}
+
+.active .step {
+    @apply bg-primary text-background dark:bg-dark-primary dark:text-dark-background;
+}
+
+.complete .step {
+    @apply bg-success text-background dark:bg-success dark:text-background;
+}
+
+.complete p {
+    @apply text-secondary opacity-100 dark:text-dark-secondary;
+}
+
+.complete:not(:first-child):before, .active:not(:first-child):before {
+    @apply bg-success ;
+}

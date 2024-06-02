@@ -65,8 +65,9 @@ export const EventForm4 = () => {
                 const base64 = await convertToBase64(doc)
                 if (base64) {
                     const docName = doc.name
-                    const docExtension = docName.split('.').pop() as Extensions
-                    if (extensions.includes(docExtension)) {
+                    const docExtension = docName.split('.').pop()?.toUpperCase() as keyof typeof Extensions
+
+                    if (docExtension && extensions.includes(Extensions[docExtension])) {
                         setDocument({
                             ...document,
                             extension: docExtension,
@@ -223,7 +224,7 @@ export const EventForm4 = () => {
                             }}
                         >
                             {docTypes.map(t => (
-                                <SelectItem key={t} value={t}>
+                                <SelectItem key={t} value={t as DocumentType}>
                                     {t.toString()}
                                 </SelectItem>
                             ))}

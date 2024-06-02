@@ -6,8 +6,8 @@ export interface UnityFilter {
 }
 
 export enum UnityType {
-    DEPARTAMENTO = 'departamento',
-    REITORIA = 'reitoria',
+    DEPARTAMENTO = 'DEPARTAMENTO',
+    REITORIA = 'REITORIA',
 }
 
 export interface Unity {

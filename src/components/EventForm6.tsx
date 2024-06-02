@@ -17,7 +17,6 @@ import {
     TableHeader,
     TableRow,
 } from '@nextui-org/table'
-import { Tooltip } from '@nextui-org/tooltip'
 import { AxiosError, AxiosResponse } from 'axios'
 import { useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
@@ -31,10 +30,10 @@ interface FormType {
 interface Item extends Expense, EventExpense {}
 
 export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
+    const user = useSelector((state: RootState) => state.user.user)
     const { register } = useFormContext<EventDTO>()
     const dto = useSelector((state: RootState) => state.form.eventData)
     const dispatch = useDispatch()
-    const user = useSelector((state: RootState) => state.user.user)
     const [items, setItems] = useState<Item[]>([])
     const [total, setTotal] = useState<string>('')
     const [expenses, setExpenses] = useState<Expense[]>([])
@@ -57,12 +56,19 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
             setTotal(value)
         }
     }, [dto, total, currentStep])
-
+    
     useEffect(() => {
-        if (user && currentStep === 5) {
+        if(user && currentStep === 5) {
             dispatch(updateFormData({ origin: user.id }))
         }
     }, [dispatch, user, currentStep])
+
+    useEffect(() => {
+        if(dto.destiny && currentStep === 5) {
+            const num = Number(dto.destiny)
+            dispatch(updateFormData({ destiny: num }))
+        }
+    }, [dispatch, currentStep, dto.destiny])
 
     useEffect(() => {
         const unityFilter: UnityFilter = {

@@ -14,9 +14,9 @@ export interface AuthDTO {
 }
 
 export enum Role {
-    SERVIDOR = 'servidor', 
-    CHEFE_DEPARTAMENTO = 'chefe departamento', 
-    PRO_REITOR = 'pró-reitor'
+    SERVIDOR = 'SERVIDOR', 
+    CHEFE_DEPARTAMENTO = 'CHEFE_DEPARTAMENTO', 
+    PRO_REITOR = 'PRO_REITOR'
 }
 
 export interface UserDTO {

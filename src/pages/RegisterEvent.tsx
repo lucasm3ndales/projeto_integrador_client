@@ -7,9 +7,11 @@ import { EventForm6 } from '@/components/EventForm6'
 import { Stepper } from '@/components/Stepper'
 import { StepperContent } from '@/components/StepperContent'
 import { EventDTO } from '@/models/event'
+import { saveEvent } from '@/services/eventService'
 import { RootState } from '@/store'
 import { updateFormData } from '@/store/formStore'
 import { Button } from '@nextui-org/button'
+import { AxiosError, AxiosResponse } from 'axios'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
@@ -70,25 +72,25 @@ export function RegisterEvent() {
                     description:
                         'Por favor, verifique os campos obrigatórios do formulário.',
                 })
-            } 
-            
+            }
+
             if (err.address) {
                 toast.error('Formulário inválido! Passo 2', {
                     className:
                         'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
                     duration: 3000,
                     description:
-                    'Por favor, verifique os campos obrigatórios do formulário.',
+                        'Por favor, verifique os campos obrigatórios do formulário.',
                 })
-            } 
-            
+            }
+
             if (err.goal) {
                 toast.error('Formulário inválido! Passo 3', {
                     className:
                         'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
                     duration: 3000,
                     description:
-                    'Por favor, verifique os campos obrigatórios do formulário.',
+                        'Por favor, verifique os campos obrigatórios do formulário.',
                 })
             }
         }
@@ -104,8 +106,26 @@ export function RegisterEvent() {
         setcurrentStep(currentStep - 1)
     }
 
-    const saveEvent = (dto: EventDTO) => {
-        console.log('Mandando para a API: ', dto)
+    const handleSaveEvent = () => {
+        saveEvent(dto)
+            .then((res: AxiosResponse<string>) => {
+                toast.error(res?.data, {
+                    className:
+                        'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                    duration: 3000,
+                })
+            })
+            .catch((err: AxiosError) => {
+                toast.error(
+                    (err.response?.data as string) ||
+                        'Erro interno do servidor!',
+                    {
+                        className:
+                            'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                        duration: 3000,
+                    },
+                )
+            })
     }
 
     return (
@@ -127,7 +147,7 @@ export function RegisterEvent() {
                 <FormProvider {...methods}>
                     <form
                         method='POST'
-                        onSubmit={methods.handleSubmit(saveEvent)}
+                        onSubmit={methods.handleSubmit(handleSaveEvent)}
                         className='mt-8 flex h-auto w-auto flex-col items-center'
                     >
                         <StepperContent

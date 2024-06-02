@@ -13,11 +13,11 @@ export interface EventExpense {
 }
 
 export enum ExpenseType {
-    OUTROS = 'outros',
-    TRANSPORTE = 'transporte',
-    ALIMENTACAO = 'alimentação',
-    HOSPEDAGEM = 'hospedagem',
-    IGRESSOS = 'ingressos'
+    OUTROS = 'OUTROS',
+    TRANSPORTE = 'TRANSPORTE',
+    ALIMENTACAO = 'ALIMENTACAO',
+    HOSPEDAGEM = 'HOSPEDAGEM',
+    IGRESSOS = 'IGRESSOS'
 }
 
 export interface ExpenseFilter {

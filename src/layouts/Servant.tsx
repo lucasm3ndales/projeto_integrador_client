@@ -13,8 +13,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { motion, useAnimationControls } from 'framer-motion'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '@/store'
+import { useDispatch } from 'react-redux'
 import { clearUser } from '@/store/userStore'
 
 const containerVariants = {
@@ -37,7 +36,6 @@ const containerVariants = {
 }
 
 export function Servant() {
-    const user = useSelector((state: RootState) => state.user.user)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -49,13 +47,11 @@ export function Servant() {
         } else {
             containerControls.start('close')
         }
-    }, [isOpen])
+    }, [isOpen, containerControls])
 
     const logout = () => {
-        if (user) {
-            dispatch(clearUser())
-            navigate({ to: '/' })
-        }
+        dispatch(clearUser())
+        navigate({ to: '/' })
     }
 
     const toggleMenu = () => {

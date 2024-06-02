@@ -3,6 +3,7 @@ import { Input } from '@nextui-org/input'
 import { Select, SelectItem } from '@nextui-org/select'
 import { useFormContext } from 'react-hook-form'
 
+
 export const EventForm1 = () => {
     const {
         register,
@@ -23,7 +24,6 @@ export const EventForm1 = () => {
         EventPeriodicity.TRIMESTRALMENTE,
         EventPeriodicity.SEMANALMENTE,
     ]
-
 
     return (
         <div className='flex h-auto w-full flex-col items-center justify-center space-y-5'>
@@ -95,7 +95,7 @@ export const EventForm1 = () => {
                         }}
                     >
                         {eventTypes.map(t => (
-                            <SelectItem key={t} value={t}>
+                            <SelectItem key={t} value={t as EventType}>
                                 {t.toString()}
                             </SelectItem>
                         ))}
@@ -142,7 +142,7 @@ export const EventForm1 = () => {
                         }}
                     >
                         {eventPeriodicities.map(p => (
-                            <SelectItem key={p} value={p}>
+                            <SelectItem key={p} value={p as EventPeriodicity}>
                                 {p.toString()}
                             </SelectItem>
                         ))}

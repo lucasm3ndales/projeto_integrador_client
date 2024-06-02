@@ -25,7 +25,6 @@ interface FormType {
     currentStep: number
 }
 
-
 interface Item extends Expense, EventExpense {}
 
 export const EventForm5: React.FC<FormType> = ({ currentStep }) => {
@@ -73,12 +72,12 @@ export const EventForm5: React.FC<FormType> = ({ currentStep }) => {
     }, [currentStep, expenses])
 
     useEffect(() => {
-        if (currentStep === 4) {
+        if(currentStep === 4) {
             dispatch(updateFormData({ cost: cost }))
             const value = formatToBRL(cost)
             setTotal(value)
         }
-    }, [dispatch, cost, currentStep])
+    }, [cost, dispatch, currentStep])
 
     useEffect(() => {
         const currentEv = dto.eventExpenses

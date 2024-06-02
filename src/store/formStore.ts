@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { EventDTO } from '@/models/event'
 
+
 interface FormState {
     eventData: Partial<EventDTO>
 }
@@ -16,7 +17,7 @@ const initialState: FormState = {
         backDate: '',
         goal: '',
         participants: 0,
-        cost: 0.0,
+        cost: undefined,
         origin: undefined,
         destiny: undefined,
         address: {

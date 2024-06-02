@@ -34,7 +34,6 @@ export function Auth() {
                 }
             })
             .catch((err: AxiosError) => {
-                console.log(err)
                 if (err?.request?.status === 0) {
                     toast.error('Conexão com o servidor perdida!', {
                         className:

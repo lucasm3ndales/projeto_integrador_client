@@ -4,8 +4,8 @@ import { EventExpense } from './expense'
 
 export interface EventDTO {
     name: string
-    type: string
-    periodicity: string
+    type: EventType | string
+    periodicity: EventPeriodicity | string
     startDate: string
     endDate: string
     departureDate: string
@@ -21,23 +21,23 @@ export interface EventDTO {
 }
 
 export enum EventType {
-    OUTROS = 'outros',
-    TECNOLOGIA = 'tecnologia',
-    SIMPOSIO = 'simpósio',
-    CONGRESSO = 'congresso',
-    EXPOFEIRA = 'expofeira',
-    FEIRA_LIVRE = 'feira livre',
+    OUTROS = 'OUTROS',
+    TECNOLOGIA = 'TECNOLOGIA',
+    SIMPOSIO = 'SIMPOSIO',
+    CONGRESSO = 'CONGRESSO',
+    EXPOFEIRA = 'EXPOFEIRA',
+    FEIRA_LIVRE = 'FEIRA_LIVRE',
 }
 
 export enum EventPeriodicity {
-    ANUALMENTE = 'anualmente',
-    SEMESTRALMENTE = 'semestralmente',
-    TRIMESTRALMENTE = 'trimestralmente',
-    SEMANALMENTE = 'semanalmente',
+    ANUALMENTE = 'ANUALMENTE',
+    SEMESTRALMENTE = 'SEMESTRALMENTE',
+    TRIMESTRALMENTE = 'TRIMESTRALMENTE',
+    SEMANALMENTE = 'SEMANALMENTE',
 }
 
 export enum EventStatus {
-    ACEITO = 'aceito',
-    PENDENTE = 'pendente',
-    RECUSADO = 'recusado',
+    ACEITO = 'ACEITO',
+    PENDENTE = 'PESNDENTE',
+    RECUSADO = 'RECUSADO',
 }

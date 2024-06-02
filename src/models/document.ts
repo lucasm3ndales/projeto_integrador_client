@@ -7,15 +7,15 @@ export interface DocumentDTO {
 }
 
 export enum Extensions {
-    PDF = 'pdf', 
-    DOCX = 'docx', 
-    DOC = 'doc', 
-    TXT = 'txt', 
-    ODT = 'odt'
+    PDF = 'PDF', 
+    DOCX = 'DOCX', 
+    DOC = 'DOC', 
+    TXT = 'TXT', 
+    ODT = 'ODT'
 }
 
 export enum DocumentType {
-    OUTROS = 'outros',
-    ALVARA = 'alvará',
-    CONTRATO = 'contrato'
+    OUTROS = 'OUTROS',
+    ALVARA = 'ALVARA',
+    CONTRATO = 'CONTRATO'
 }

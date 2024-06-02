@@ -7,16 +7,19 @@ import { EventForm6 } from '@/components/EventForm6'
 import { Stepper } from '@/components/Stepper'
 import { StepperContent } from '@/components/StepperContent'
 import { EventDTO } from '@/models/event'
+import { RootState } from '@/store'
 import { updateFormData } from '@/store/formStore'
 import { Button } from '@nextui-org/button'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 export function RegisterEvent() {
     const [currentStep, setcurrentStep] = useState<number>(0)
     const methods = useForm<EventDTO>()
+    const dto = useSelector((state: RootState) => state.form.eventData)
     const dispatch = useDispatch()
+    const [isUpdated, setIsUpdated] = useState<boolean>(false)
 
     const steps = [
         'Dados do Evento',
@@ -28,27 +31,38 @@ export function RegisterEvent() {
     ]
 
     const stepContent = [
-        <EventForm1 currentStep={currentStep}/>,
-        <EventForm2 currentStep={currentStep}/>,
-        <EventForm3 currentStep={currentStep}/>,
+        <EventForm1 />,
+        <EventForm2 />,
+        <EventForm3 />,
         <EventForm4 />,
         <EventForm5 currentStep={currentStep} />,
         <EventForm6 currentStep={currentStep} />,
     ]
 
-    const step = (n: number) => {
-        if (n >= 0 && n < steps.length) {
-            setcurrentStep(n)
-        }
+    useEffect(() => {
+        if(isUpdated) {
+            setcurrentStep(currentStep + 1)
+            setIsUpdated(false)
+        }   
+    }, [dto, isUpdated, currentStep])
+
+
+    const handleNextStep = () => {
+        const values = methods.getValues()
+        dispatch(updateFormData(values))
+        setIsUpdated(true)
+    } 
+
+    const handleBackStep = () => {
+        setcurrentStep(currentStep - 1)
     }
 
     const saveEvent = (dto: EventDTO) => {
-        dispatch(updateFormData(dto))
-        if (currentStep === 5) {
-            console.log('FINALIZOU')
-            console.log(dto)
+        if(currentStep === 5) {
+            console.log('Mandando para a API:', dto)
         }
     }
+ 
 
     return (
         <main className='flex w-full justify-center lg:ms-12 lg:mt-14'>
@@ -76,7 +90,7 @@ export function RegisterEvent() {
                             content={stepContent}
                             current={currentStep}
                         />
-                        {currentStep === 5 && (
+                        {currentStep ===  5 && (
                             <div className='flex'>
                                 <Button
                                     type='submit'
@@ -88,30 +102,30 @@ export function RegisterEvent() {
                                 </Button>
                             </div>
                         )}
+                        <div className='mt-3 flex h-auto w-full justify-between'>
+                            <Button
+                                type='button'
+                                size='lg'
+                                radius='md'
+                                isDisabled={currentStep === 0}
+                                className='w-auto bg-secondary font-semibold text-background dark:bg-dark-secondary dark:text-dark-background'
+                                onClick={handleBackStep}
+                            >
+                                Voltar
+                            </Button>
+                            <Button
+                                type='button'
+                                size='lg'
+                                radius='md'
+                                isDisabled={currentStep === 5}
+                                className='w-auto bg-primary font-semibold text-background dark:bg-dark-primary dark:text-dark-background'
+                                onClick={handleNextStep}
+                            >
+                                Avançar
+                            </Button>
+                        </div>
                     </form>
                 </FormProvider>
-                <div className='mt-3 flex justify-between'>
-                    <Button
-                        type='button'
-                        size='lg'
-                        radius='md'
-                        isDisabled={currentStep === 0}
-                        className='w-auto bg-secondary font-semibold text-background dark:bg-dark-secondary dark:text-dark-background'
-                        onClick={() => step(currentStep - 1)}
-                    >
-                        Voltar
-                    </Button>
-                    <Button
-                        type='button'
-                        size='lg'
-                        radius='md'
-                        isDisabled={currentStep === 5}
-                        className='w-auto bg-primary font-semibold text-background dark:bg-dark-primary dark:text-dark-background'
-                        onClick={() => step(currentStep + 1)}
-                    >
-                        Avançar
-                    </Button>
-                </div>
             </div>
         </main>
     )

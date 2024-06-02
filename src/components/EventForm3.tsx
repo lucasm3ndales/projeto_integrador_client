@@ -1,30 +1,13 @@
 import { EventDTO } from '@/models/event'
-import { RootState } from '@/store'
-import { updateFormData } from '@/store/formStore'
 import { Textarea } from '@nextui-org/input'
-import { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { useDispatch, useSelector } from 'react-redux'
 
-interface FormType {
-    currentStep: number
-}
-
-export const EventForm3: React.FC<FormType> = ({ currentStep }) => {
+export const EventForm3 = () => {
     const {
         register,
-        getValues,
         formState: { errors },
     } = useFormContext<EventDTO>()
-    const dto = useSelector((state: RootState) => state.form.eventData)
-    const dispatch = useDispatch()
 
-    useEffect(() => {
-        const text = getValues('goal')
-        if(currentStep != 2 && text != dto.goal && text != '') {
-            dispatch(updateFormData({goal: text}))
-        }
-    }, [dispatch, getValues, currentStep, dto])
 
     return (
         <div

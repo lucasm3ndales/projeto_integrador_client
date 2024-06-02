@@ -25,6 +25,8 @@ interface FormType {
     currentStep: number
 }
 
+//TODO: BUG AO REMOVER FLOAT 0.XX
+
 interface Item extends Expense, EventExpense {}
 
 export const EventForm5: React.FC<FormType> = ({ currentStep }) => {
@@ -37,7 +39,7 @@ export const EventForm5: React.FC<FormType> = ({ currentStep }) => {
     const dispatch = useDispatch()
     const [expenses, setExpenses] = useState<Expense[]>([])
     const [total, setTotal] = useState<string>('')
-    const [cost, setCost] = useState<number>(0.00)
+    const [cost, setCost] = useState<number>(0.0)
     const [ev, setEv] = useState<EventExpense>({
         idExpense: null,
         justification: '',
@@ -72,10 +74,12 @@ export const EventForm5: React.FC<FormType> = ({ currentStep }) => {
     }, [currentStep, expenses])
 
     useEffect(() => {
-        dispatch(updateFormData({ cost: cost }))
-        const value = formatToBRL(cost)
-        setTotal(value)
-    }, [dispatch, cost])
+        if (currentStep === 4) {
+            dispatch(updateFormData({ cost: cost }))
+            const value = formatToBRL(cost)
+            setTotal(value)
+        }
+    }, [dispatch, cost, currentStep])
 
     useEffect(() => {
         const currentEv = dto.eventExpenses
@@ -135,7 +139,7 @@ export const EventForm5: React.FC<FormType> = ({ currentStep }) => {
 
             setValue('eventExpenses', updatedEventExpenses)
 
-            const parsedItemValue = parseToNumber(ev.value as string)
+            const parsedItemValue = parseFloat(ev.value as string)
 
             const sum = cost + parsedItemValue
 
@@ -145,7 +149,7 @@ export const EventForm5: React.FC<FormType> = ({ currentStep }) => {
 
             setEv({ idExpense: null, justification: '', value: 0.0 })
         } else {
-            toast('Preencha todos os campos do documento!', {
+            toast('Preencha todos os campos!', {
                 className:
                     'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
                 duration: 3000,
@@ -155,8 +159,10 @@ export const EventForm5: React.FC<FormType> = ({ currentStep }) => {
     }
 
     function parseToNumber(value: string): number {
-        const numericValue = String(value).replace('R$', '').trim()
-        return parseFloat(numericValue)
+        let num = String(value).replace('R$', '').trim()
+        num = num.replace(/\./g, '')
+        num = num.replace(',', '.')
+        return parseFloat(num)
     }
 
     function removeExpense(item: Item) {
@@ -167,10 +173,9 @@ export const EventForm5: React.FC<FormType> = ({ currentStep }) => {
         )
 
         const parsedItemValue = parseToNumber(item.value as string)
-
         const sub = cost - parsedItemValue
 
-        if (!isNaN(sub)) setCost(sub > 0 ? sub : 0.0)
+        if (!isNaN(sub)) setCost(sub > 0.0 ? sub : 0.0)
 
         setValue('eventExpenses', updatedEventExpenses)
         dispatch(updateFormData({ eventExpenses: updatedEventExpenses }))

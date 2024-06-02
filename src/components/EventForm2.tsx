@@ -1,65 +1,13 @@
 import { EventDTO } from '@/models/event'
 import { Input } from '@nextui-org/input'
 import { useFormContext } from 'react-hook-form'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '@/store'
-import { updateFormData } from '@/store/formStore'
-import { useEffect } from 'react'
-import { AddressDTO } from '@/models/address'
 
-interface FormType {
-    currentStep: number
-}
 
-export const EventForm2: React.FC<FormType> = ({ currentStep }) => {
+export const EventForm2 = () => {
     const {
         register,
-        getValues,
         formState: { errors },
     } = useFormContext<EventDTO>()
-    const dto = useSelector((state: RootState) => state.form.eventData)
-    const dispatch = useDispatch()
-
-    useEffect(() => {
-        if(!dto.address && currentStep === 1) {
-            dispatch(updateFormData({ address: {
-                country: '',
-                state: '',
-                city: '',
-                district: '',
-                street: '',
-                num: '',
-                complement: ''
-            } }))
-        }
-    }, [dto.address, dispatch])
-
-    useEffect(() => {
-        
-        function verifyAddressValues() {
-
-        }
-
-        const coutry = getValues('address.country')
-        const state = getValues('address.state')
-        const city = getValues('address.city')
-        const district = getValues('address.district')
-        const street = getValues('address.street')
-        const num = getValues('address.num')
-        const complement = getValues('address.complement')
-        if (
-            currentStep != 1 ) {
-            dispatch(updateFormData({ address: {
-                country: coutry,
-                state: state,
-                city: city,
-                district: district,
-                street: street,
-                num: num,
-                complement: complement
-            } }))
-        }
-    }, [dispatch, getValues, currentStep, dto])
 
     return (
         <div className='flex h-auto w-full flex-col items-center justify-center space-y-5'>

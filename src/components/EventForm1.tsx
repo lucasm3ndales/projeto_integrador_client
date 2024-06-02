@@ -24,9 +24,10 @@ export const EventForm1 = () => {
         EventPeriodicity.SEMANALMENTE,
     ]
 
+
     return (
         <div className='flex h-auto w-full flex-col items-center justify-center space-y-5'>
-            <div className='flex flex-col items-center lg:flex-row w-full justify-center lg:space-x-10 space-y-4 lg:space-y-0'>
+            <div className='flex w-full flex-col items-center justify-center space-y-4 lg:flex-row lg:space-x-10 lg:space-y-0'>
                 <div className='w-72'>
                     <Input
                         label='Nome do Evento*'
@@ -148,7 +149,7 @@ export const EventForm1 = () => {
                     </Select>
                 </div>
             </div>
-            <div className='flex flex-col items-center lg:flex-row w-full justify-center lg:space-x-10 space-y-4 lg:space-y-0'>
+            <div className='flex w-full flex-col items-center justify-center space-y-4 lg:flex-row lg:space-x-10 lg:space-y-0'>
                 <div className='w-72'>
                     <Input
                         label='Data de Início*'
@@ -233,7 +234,7 @@ export const EventForm1 = () => {
                     />
                 </div>
             </div>
-            <div className='flex flex-col items-center lg:flex-row w-full justify-center lg:space-x-10 space-y-4 lg:space-y-0'>
+            <div className='flex w-full flex-col items-center justify-center space-y-4 lg:flex-row lg:space-x-10 lg:space-y-0'>
                 <div className='w-72'>
                     <Input
                         label='Data de Ida*'

@@ -6,7 +6,31 @@ interface FormState {
 }
 
 const initialState: FormState = {
-    eventData: {},
+    eventData: {
+        name: '',
+        type: '',
+        periodicity: '',
+        startDate: '',
+        endDate: '',
+        departureDate: '',
+        backDate: '',
+        goal: '',
+        participants: 0,
+        cost: 0.0,
+        origin: undefined,
+        destiny: undefined,
+        address: {
+            country: '',
+            state: '',
+            city: '',
+            district: '',
+            street: '',
+            num: '',
+            complement: '',
+        },
+        documents: [],
+        eventExpenses: [],
+    },
 }
 
 const formSlice = createSlice({
@@ -14,7 +38,14 @@ const formSlice = createSlice({
     initialState,
     reducers: {
         updateFormData: (state, action: PayloadAction<Partial<EventDTO>>) => {
-            state.eventData = { ...state.eventData, ...action.payload }
+            state.eventData = {
+                ...state.eventData,
+                ...action.payload,
+                address: {
+                    ...state.eventData.address,
+                    ...action.payload.address,
+                },
+            }
         },
     },
 })

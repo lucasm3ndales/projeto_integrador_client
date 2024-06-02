@@ -29,20 +29,15 @@ interface FormType {
 
 interface Item extends Expense, EventExpense {}
 
-export const EventForm6: React.FC<FormType> = ({currentStep}) => {
-    const {
-        register,
-    } = useFormContext<EventDTO>()
+export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
+    const { register } = useFormContext<EventDTO>()
     const dto = useSelector((state: RootState) => state.form.eventData)
     const dispatch = useDispatch()
     const user = useSelector((state: RootState) => state.user.user)
     const [items, setItems] = useState<Item[]>([])
+    const [total, setTotal] = useState<string>('')
     const [expenses, setExpenses] = useState<Expense[]>([])
     const [unities, setUnities] = useState<Unity[]>([])
-
-    const unityFilter: UnityFilter = {
-        type: UnityType.DEPARTAMENTO,
-    }
 
     const columnsDocument = [
         { key: 'name', label: 'Nome' },
@@ -56,12 +51,23 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
     ]
 
     useEffect(() => {
-        if(user && currentStep === 5) {
-            dispatch(updateFormData({origin: user.id}))
+        if (currentStep === 5) {
+            const value = formatToBRL(dto.cost as number)
+            setTotal(value)
+        }
+    }, [dto, total, currentStep])
+
+    useEffect(() => {
+        if (user && currentStep === 5) {
+            dispatch(updateFormData({ origin: user.id }))
         }
     }, [dispatch, user, currentStep])
 
     useEffect(() => {
+        const unityFilter: UnityFilter = {
+            type: UnityType.DEPARTAMENTO,
+        }
+
         if (unities && unities.length <= 0 && currentStep === 5) {
             getUnities(unityFilter)
                 .then((res: AxiosResponse<Unity[]>) => {
@@ -86,7 +92,7 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
             expenses &&
             expenses.length <= 0 &&
             dto.eventExpenses &&
-            dto.eventExpenses.length > 0 && 
+            dto.eventExpenses.length > 0 &&
             currentStep === 5
         ) {
             getExpenses({} as ExpenseFilter)
@@ -121,7 +127,8 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
             dto.eventExpenses &&
             dto.eventExpenses.length > 0 &&
             expenses &&
-            expenses.length > 0 && currentStep === 5
+            expenses.length > 0 &&
+            currentStep === 5
         ) {
             const items: Item[] = dto.eventExpenses
                 .map(ev => {
@@ -149,7 +156,7 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
     }, [currentStep, dto.eventExpenses, expenses])
 
     return (
-        <div className='flex w-full h-[475px]'>
+        <div className='flex h-[475px] w-full'>
             <ScrollShadow className='h-[200] w-full p-2'>
                 <div className='flex flex-col'>
                     <div className='mb-3 flex text-lg font-semibold text-secondary dark:text-dark-secondary'>
@@ -163,7 +170,7 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                defaultValue={dto.name}
+                                value={dto.name}
                                 classNames={{
                                     input: ['bg-transparent'],
                                     label: [
@@ -186,7 +193,7 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                defaultValue={dto.type?.toString()}
+                                value={dto.type?.toString()}
                                 classNames={{
                                     input: ['bg-transparent'],
                                     label: [
@@ -209,7 +216,7 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                defaultValue={dto.periodicity?.toString()}
+                                value={dto.periodicity?.toString()}
                                 classNames={{
                                     input: ['bg-transparent'],
                                     label: [
@@ -232,7 +239,7 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                defaultValue={dto.participants?.toString()}
+                                value={dto.participants?.toString()}
                                 classNames={{
                                     input: ['bg-transparent'],
                                     label: [
@@ -257,7 +264,7 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                defaultValue={dto.startDate}
+                                value={dto.startDate}
                                 classNames={{
                                     input: ['bg-transparent'],
                                     label: [
@@ -280,7 +287,7 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                defaultValue={dto.endDate}
+                                value={dto.endDate}
                                 classNames={{
                                     input: ['bg-transparent'],
                                     label: [
@@ -303,7 +310,7 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                defaultValue={dto.departureDate}
+                                value={dto.departureDate}
                                 classNames={{
                                     input: ['bg-transparent'],
                                     label: [
@@ -326,7 +333,7 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                defaultValue={dto.backDate}
+                                value={dto.backDate}
                                 classNames={{
                                     input: ['bg-transparent'],
                                     label: [
@@ -355,7 +362,7 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                defaultValue={dto.address?.country}
+                                value={dto.address?.country}
                                 classNames={{
                                     input: ['bg-transparent'],
                                     label: [
@@ -378,7 +385,7 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                defaultValue={dto.address?.state}
+                                value={dto.address?.state}
                                 classNames={{
                                     input: ['bg-transparent'],
                                     label: [
@@ -401,7 +408,7 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                defaultValue={dto.address?.city}
+                                value={dto.address?.city}
                                 classNames={{
                                     input: ['bg-transparent'],
                                     label: [
@@ -424,7 +431,7 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                defaultValue={dto.address?.district}
+                                value={dto.address?.district}
                                 classNames={{
                                     input: ['bg-transparent'],
                                     label: [
@@ -449,7 +456,7 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                defaultValue={dto.address?.street}
+                                value={dto.address?.street}
                                 classNames={{
                                     input: ['bg-transparent'],
                                     label: [
@@ -472,7 +479,7 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                defaultValue={
+                                value={
                                     dto.address?.num ? dto.address.num : '--'
                                 }
                                 classNames={{
@@ -497,7 +504,7 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                defaultValue={
+                                value={
                                     dto.address?.complement
                                         ? dto.address.complement
                                         : '--'
@@ -530,7 +537,6 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
                             size='lg'
                             radius='md'
                             minRows={6}
-                            defaultValue={dto.goal}
                             value={dto.goal}
                             classNames={{
                                 input: ['bg-transparent'],
@@ -593,43 +599,51 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
                     <div className='mb-3 flex text-lg font-semibold text-secondary dark:text-dark-secondary'>
                         Despesas
                     </div>
-                    <div className='mb-5 flex w-2/3'>
-                        <Table
-                            aria-label='Example table with dynamic content'
-                            classNames={{
-                                wrapper: [
-                                    'bg-transparent border border-tertiary dark:border-dark-tertiary rounded-md',
-                                ],
-                                th: [
-                                    'text-secondary dark:text-dark-secondary bg-transparent',
-                                ],
-                                emptyWrapper: [
-                                    'text-secondary dark:text-dark-secondary',
-                                ],
-                            }}
-                        >
-                            <TableHeader columns={columnsExpenses}>
-                                {column => (
-                                    <TableColumn key={column.key}>
-                                        {column.label}
-                                    </TableColumn>
-                                )}
-                            </TableHeader>
-                            <TableBody
-                                items={items}
-                                emptyContent={'Nenhuma Despesa Adicionada!'}
+                    <div className='mb-5 flex w-full items-center justify-between'>
+                        <div className='flex w-2/3'>
+                            <Table
+                                aria-label='Example table with dynamic content'
+                                classNames={{
+                                    wrapper: [
+                                        'bg-transparent border border-tertiary dark:border-dark-tertiary rounded-md',
+                                    ],
+                                    th: [
+                                        'text-secondary dark:text-dark-secondary bg-transparent',
+                                    ],
+                                    emptyWrapper: [
+                                        'text-secondary dark:text-dark-secondary',
+                                    ],
+                                }}
                             >
-                                {item => (
-                                    <TableRow key={item.idExpense}>
-                                        {columnKey => (
-                                            <TableCell className='capitalize'>
-                                                {getKeyValue(item, columnKey)}
-                                            </TableCell>
-                                        )}
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
+                                <TableHeader columns={columnsExpenses}>
+                                    {column => (
+                                        <TableColumn key={column.key}>
+                                            {column.label}
+                                        </TableColumn>
+                                    )}
+                                </TableHeader>
+                                <TableBody
+                                    items={items}
+                                    emptyContent={'Nenhuma Despesa Adicionada!'}
+                                >
+                                    {item => (
+                                        <TableRow key={item.idExpense}>
+                                            {columnKey => (
+                                                <TableCell className='capitalize'>
+                                                    {getKeyValue(
+                                                        item,
+                                                        columnKey,
+                                                    )}
+                                                </TableCell>
+                                            )}
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </div>
+                        <div className='ms-4 flex w-1/4 items-center h-20 min-h-20 font-semibold text-xl text-primary dark:text-dark-primary justify-center rounded-md border border-tertiary bg-transparent dark:border-dark-tertiary'>
+                            Custo Total: {total}
+                        </div>
                     </div>
                     <hr className='mb-5 w-full border-tertiary dark:border-dark-tertiary' />
                     <div className='mb-3 flex text-lg font-semibold text-secondary dark:text-dark-secondary'>
@@ -676,7 +690,11 @@ export const EventForm6: React.FC<FormType> = ({currentStep}) => {
                             }}
                         >
                             {unities.map(u => (
-                                <SelectItem key={u.id as number} value={u.id as number} className='capitalize'>
+                                <SelectItem
+                                    key={u.id as number}
+                                    value={u.id as number}
+                                    className='capitalize'
+                                >
                                     {`${u.name.toLowerCase()} - ${u.type.toString().toLocaleLowerCase()}`}
                                 </SelectItem>
                             ))}

@@ -28,8 +28,9 @@ instance.interceptors.response.use(
     res => res,
     err => {
         if (err?.response?.status === 403) {
-            //localStorage.removeItem('user')
-            console.log('EXPIROU')
+            localStorage.removeItem('user')
+            window.location.replace('/')
+
         }
         return Promise.reject(err)
     },

@@ -74,7 +74,7 @@ export const EventForm4 = () => {
                             name: docName,
                         })
                     } else {
-                        toast('Extensão de arquivo não suportada!', {
+                        toast.error('Extensão de arquivo não suportada!', {
                             className:
                                 'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
                             duration: 3000,
@@ -83,7 +83,7 @@ export const EventForm4 = () => {
                         })
                     }
                 } else {
-                    toast(
+                    toast.error(
                         'Erro ao converter arquivo para o formato esperado!',
                         {
                             className:

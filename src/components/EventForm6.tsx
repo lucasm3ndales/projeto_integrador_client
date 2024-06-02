@@ -17,6 +17,7 @@ import {
     TableHeader,
     TableRow,
 } from '@nextui-org/table'
+import { Tooltip } from '@nextui-org/tooltip'
 import { AxiosError, AxiosResponse } from 'axios'
 import { useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
@@ -641,7 +642,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                                 </TableBody>
                             </Table>
                         </div>
-                        <div className='ms-4 flex w-1/4 items-center h-20 min-h-20 font-semibold text-xl text-primary dark:text-dark-primary justify-center rounded-md border border-tertiary bg-transparent dark:border-dark-tertiary'>
+                        <div className='ms-4 flex h-20 min-h-20 w-1/4 items-center justify-center rounded-md border border-tertiary bg-transparent p-2 text-xl font-semibold text-primary dark:border-dark-tertiary dark:text-dark-primary'>
                             Custo Total: {total}
                         </div>
                     </div>

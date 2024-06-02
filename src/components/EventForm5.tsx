@@ -25,7 +25,6 @@ interface FormType {
     currentStep: number
 }
 
-//TODO: BUG AO REMOVER FLOAT 0.XX
 
 interface Item extends Expense, EventExpense {}
 

@@ -9,16 +9,16 @@ import { store } from './store/index'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <Provider store={store}>
-            <NextUIProvider>
-                <NextThemesProvider
-                    attribute='class'
-                    defaultTheme='light'
-                    themes={['light', 'dark']}
-                >
+        <NextUIProvider>
+            <NextThemesProvider
+                attribute='class'
+                defaultTheme='light'
+                themes={['light', 'dark']}
+            >
+                <Provider store={store}>
                     <App />
-                </NextThemesProvider>
-            </NextUIProvider>
-        </Provider>
+                </Provider>
+            </NextThemesProvider>
+        </NextUIProvider>
     </React.StrictMode>,
 )

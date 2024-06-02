@@ -13,6 +13,7 @@ import { Button } from '@nextui-org/button'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'sonner'
 
 export function RegisterEvent() {
     const [currentStep, setcurrentStep] = useState<number>(0)
@@ -40,29 +41,72 @@ export function RegisterEvent() {
     ]
 
     useEffect(() => {
-        if(isUpdated) {
+        if (isUpdated) {
             setcurrentStep(currentStep + 1)
             setIsUpdated(false)
-        }   
+        }
     }, [dto, isUpdated, currentStep])
 
+    useEffect(() => {
+        if (
+            methods.formState.isSubmitted &&
+            Object.keys(methods.formState.errors).length > 0
+        ) {
+            const err = methods.formState.errors
+            if (
+                err.name ||
+                err.type ||
+                err.periodicity ||
+                err.participants ||
+                err.startDate ||
+                err.endDate ||
+                err.departureDate ||
+                err.backDate
+            ) {
+                toast.error('Formulário inválido! Passo 1', {
+                    className:
+                        'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                    duration: 3000,
+                    description:
+                        'Por favor, verifique os campos obrigatórios do formulário.',
+                })
+            } 
+            
+            if (err.address) {
+                toast.error('Formulário inválido! Passo 2', {
+                    className:
+                        'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                    duration: 3000,
+                    description:
+                    'Por favor, verifique os campos obrigatórios do formulário.',
+                })
+            } 
+            
+            if (err.goal) {
+                toast.error('Formulário inválido! Passo 3', {
+                    className:
+                        'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                    duration: 3000,
+                    description:
+                    'Por favor, verifique os campos obrigatórios do formulário.',
+                })
+            }
+        }
+    }, [methods.formState.isSubmitted, methods.formState.errors])
 
     const handleNextStep = () => {
         const values = methods.getValues()
         dispatch(updateFormData(values))
         setIsUpdated(true)
-    } 
+    }
 
     const handleBackStep = () => {
         setcurrentStep(currentStep - 1)
     }
 
     const saveEvent = (dto: EventDTO) => {
-        if(currentStep === 5) {
-            console.log('Mandando para a API:', dto)
-        }
+        console.log('Mandando para a API: ', dto)
     }
- 
 
     return (
         <main className='flex w-full justify-center lg:ms-12 lg:mt-14'>
@@ -90,7 +134,7 @@ export function RegisterEvent() {
                             content={stepContent}
                             current={currentStep}
                         />
-                        {currentStep ===  5 && (
+                        {currentStep === 5 && (
                             <div className='flex'>
                                 <Button
                                     type='submit'
@@ -102,30 +146,30 @@ export function RegisterEvent() {
                                 </Button>
                             </div>
                         )}
-                        <div className='mt-3 flex h-auto w-full justify-between'>
-                            <Button
-                                type='button'
-                                size='lg'
-                                radius='md'
-                                isDisabled={currentStep === 0}
-                                className='w-auto bg-secondary font-semibold text-background dark:bg-dark-secondary dark:text-dark-background'
-                                onClick={handleBackStep}
-                            >
-                                Voltar
-                            </Button>
-                            <Button
-                                type='button'
-                                size='lg'
-                                radius='md'
-                                isDisabled={currentStep === 5}
-                                className='w-auto bg-primary font-semibold text-background dark:bg-dark-primary dark:text-dark-background'
-                                onClick={handleNextStep}
-                            >
-                                Avançar
-                            </Button>
-                        </div>
                     </form>
                 </FormProvider>
+                <div className='mt-3 flex h-auto w-full justify-between'>
+                    <Button
+                        type='button'
+                        size='lg'
+                        radius='md'
+                        isDisabled={currentStep === 0}
+                        className='w-auto bg-secondary font-semibold text-background dark:bg-dark-secondary dark:text-dark-background'
+                        onClick={handleBackStep}
+                    >
+                        Voltar
+                    </Button>
+                    <Button
+                        type='button'
+                        size='lg'
+                        radius='md'
+                        isDisabled={currentStep === 5}
+                        className='w-auto bg-primary font-semibold text-background dark:bg-dark-primary dark:text-dark-background'
+                        onClick={handleNextStep}
+                    >
+                        Avançar
+                    </Button>
+                </div>
             </div>
         </main>
     )

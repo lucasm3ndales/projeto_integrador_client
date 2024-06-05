@@ -1,9 +1,17 @@
 
 export interface DocumentDTO {
     name: string,
-    type: string,
-    extension: string,
+    type: string | DocumentType,
+    extension: string | Extensions,
     document: string | File
+}
+
+export interface Document {
+    id: number
+    name: string,
+    type: string | DocumentType,
+    extension: string | Extensions,
+    document: string[]
 }
 
 export enum Extensions {

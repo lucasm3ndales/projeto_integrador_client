@@ -1,6 +1,7 @@
-import { AddressDTO } from './address'
+import { Address, AddressDTO } from './address'
 import { DocumentDTO } from './document'
 import { EventExpense } from './expense'
+import { Procedure } from './procedure'
 
 export interface EventDTO {
     name: string
@@ -20,6 +21,35 @@ export interface EventDTO {
     eventExpenses: EventExpense[]
 }
 
+export interface Event {
+    id: number,
+    name: string
+    type: EventType
+    periodicity: EventPeriodicity
+    startDate: string
+    endDate: string
+    departureDate: string
+    backDate: string
+    goal: string
+    participants: number
+    cost: number
+    address: Address
+    procedures: Procedure[]
+    eventExpenses: EventExpense[]
+}
+
+export interface EventFilter {
+    sort?: string,
+    page?: number,
+    size?: number,
+    name?: string,
+    periodicity?: string,
+    status?: string,
+    startDate?: string,
+    endDate?: string,
+    archived: boolean
+}
+
 export enum EventType {
     OUTROS = 'OUTROS',
     TECNOLOGIA = 'TECNOLOGIA',
@@ -34,6 +64,7 @@ export enum EventPeriodicity {
     SEMESTRALMENTE = 'SEMESTRALMENTE',
     TRIMESTRALMENTE = 'TRIMESTRALMENTE',
     SEMANALMENTE = 'SEMANALMENTE',
+    MENSALMENTE = 'MENSALMENTE'
 }
 
 export enum EventStatus {

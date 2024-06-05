@@ -1,11 +1,9 @@
-
-
-interface IdUnityManager {
-    idUser: number | null,
-    idUnity: number | null
-}
+import { Unity } from './unity'
+import { User } from './user'
 
 export interface UnityManager {
-    id: IdUnityManager,
-    startedOn: string | EpochTimeStamp
+    id: number
+    startedOn: EpochTimeStamp | string
+    user: User
+    unity: Unity
 }

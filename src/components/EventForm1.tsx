@@ -23,6 +23,7 @@ export const EventForm1 = () => {
         EventPeriodicity.SEMESTRALMENTE,
         EventPeriodicity.TRIMESTRALMENTE,
         EventPeriodicity.SEMANALMENTE,
+        EventPeriodicity.MENSALMENTE,
     ]
 
     return (

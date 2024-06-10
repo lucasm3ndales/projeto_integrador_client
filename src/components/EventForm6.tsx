@@ -690,7 +690,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                             }}
                             popoverProps={{
                                 classNames: {
-                                    base: 'before:bg-background dark:bg-dark-background',
+                                    base: 'before:bg-background before:dark:bg-dark-background',
                                     content:
                                         'p-0 border-small border-divider bg-background dark:bg-dark-background',
                                 },

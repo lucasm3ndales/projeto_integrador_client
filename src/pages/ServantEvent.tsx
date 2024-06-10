@@ -1,8 +1,11 @@
 import { RegisterEvent } from '@/pages/RegisterEvent'
-import { ServantViewEvent } from '@/pages/ServantViewEvent'
+import { ViewEvents } from '@/pages/ViewEvents'
 import { Tab, Tabs } from '@nextui-org/tabs'
+import { Key, useState } from 'react'
 
 export function ServantEvent() {
+    const [key, setKey] = useState<string>('view')
+
     return (
         <>
             <Tabs
@@ -10,6 +13,8 @@ export function ServantEvent() {
                 size='md'
                 radius='md'
                 variant='underlined'
+                selectedKey={key}
+                onSelectionChange={(k: Key) => setKey(k as string)}
                 className='mt-28 lg:ms-12 lg:mt-0'
                 classNames={{
                     tabList: [
@@ -21,11 +26,11 @@ export function ServantEvent() {
                     cursor: ['bg-primary dark:bg-dark-primary'],
                 }}
             >
+                <Tab key='view' title='Visualizar Eventos'>
+                    <ViewEvents />
+                </Tab>
                 <Tab key='register' title='Registrar Evento'>
                     <RegisterEvent />
-                </Tab>
-                <Tab key='view' title='Visualizar Eventos'>
-                    <ServantViewEvent />
                 </Tab>
             </Tabs>
         </>

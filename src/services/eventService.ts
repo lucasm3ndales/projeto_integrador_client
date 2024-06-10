@@ -18,7 +18,11 @@ export const saveEvent = async (
 export const getEvents = async (
     id: number,
     filter: EventFilter,
-): Promise<AxiosResponse<Event[]>> => {
+): Promise<AxiosResponse<Event[] | any>> => {
 
     return await instance.get(`/event/events/${id}`, { params: filter })
+}
+
+export const getEvent = async (id: number): Promise<AxiosResponse<Event>> => {
+    return await instance.get(`/event/${id}`)
 }

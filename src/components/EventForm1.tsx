@@ -89,7 +89,7 @@ export const EventForm1 = () => {
                         }}
                         popoverProps={{
                             classNames: {
-                                base: 'before:bg-background dark:bg-dark-background',
+                                base: 'before:bg-background before:dark:bg-dark-background',
                                 content:
                                     'p-0 border-small border-divider bg-background dark:bg-dark-background',
                             },
@@ -136,7 +136,7 @@ export const EventForm1 = () => {
                         }}
                         popoverProps={{
                             classNames: {
-                                base: 'before:bg-background dark:bg-dark-background',
+                                base: 'before:bg-background before:dark:bg-dark-background',
                                 content:
                                     'p-0 border-small border-divider bg-background dark:bg-dark-background',
                             },

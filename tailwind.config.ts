@@ -4,7 +4,7 @@ import type { Config } from 'tailwindcss'
 const config: Config = {
     content: [
         './src/**/*.{html,js,jsx,ts,tsx}',
-        './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}'
+        './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
     ],
     theme: {
         extend: {
@@ -22,14 +22,12 @@ const config: Config = {
                     secondary: '#f1f5f9',
                     tertiary: '#475569',
                     error: '#e11d48',
-                    success: '#059669'
-                }
-            }
-        }
+                    success: '#059669',
+                },
+            },
+        },
     },
     darkMode: 'class',
-    plugins: [
-        nextui({addCommonColors: true,})
-    ]
+    plugins: [nextui({ addCommonColors: true })],
 }
 export default config

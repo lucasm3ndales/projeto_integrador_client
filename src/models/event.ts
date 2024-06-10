@@ -1,3 +1,4 @@
+import { DateValue } from '@nextui-org/react'
 import { Address, AddressDTO } from './address'
 import { DocumentDTO } from './document'
 import { EventExpense } from './expense'
@@ -33,6 +34,8 @@ export interface Event {
     goal: string
     participants: number
     cost: number
+    archived: boolean,
+    status: EventStatus
     address: Address
     procedures: Procedure[]
     eventExpenses: EventExpense[]
@@ -42,11 +45,12 @@ export interface EventFilter {
     sort?: string,
     page?: number,
     size?: number,
+    type?: string,
     name?: string,
     periodicity?: string,
     status?: string,
-    startDate?: string,
-    endDate?: string,
+    startDate?: string | DateValue,
+    endDate?: string | DateValue,
     archived: boolean
 }
 
@@ -69,6 +73,6 @@ export enum EventPeriodicity {
 
 export enum EventStatus {
     ACEITO = 'ACEITO',
-    PENDENTE = 'PESNDENTE',
+    PENDENTE = 'PENDENTE',
     RECUSADO = 'RECUSADO',
 }

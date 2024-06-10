@@ -19,6 +19,7 @@ import { Route as ServantServantImport } from './routes/_servant/servant'
 import { Route as ServantExpenseImport } from './routes/_servant/expense'
 import { Route as ServantEventImport } from './routes/_servant/event'
 import { Route as ServantDepartamentImport } from './routes/_servant/departament'
+import { Route as ServantDetailsEventIdImport } from './routes/_servant/details.$eventId'
 
 // Create/Update Routes
 
@@ -62,6 +63,11 @@ const ServantDepartamentRoute = ServantDepartamentImport.update({
   getParentRoute: () => ServantRoute,
 } as any)
 
+const ServantDetailsEventIdRoute = ServantDetailsEventIdImport.update({
+  path: '/details/$eventId',
+  getParentRoute: () => ServantRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -98,6 +104,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServantServantImport
       parentRoute: typeof ServantImport
     }
+    '/_servant/details/$eventId': {
+      preLoaderRoute: typeof ServantDetailsEventIdImport
+      parentRoute: typeof ServantImport
+    }
   }
 }
 
@@ -110,6 +120,7 @@ export const routeTree = rootRoute.addChildren([
     ServantEventRoute,
     ServantExpenseRoute,
     ServantServantRoute,
+    ServantDetailsEventIdRoute,
   ]),
   ModuleRoute,
   RegisterRoute,

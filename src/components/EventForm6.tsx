@@ -19,7 +19,6 @@ import {
 } from '@nextui-org/table'
 import { AxiosError, AxiosResponse } from 'axios'
 import { useEffect, useState } from 'react'
-import { useFormContext } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
 
@@ -31,7 +30,6 @@ interface Item extends Expense, EventExpense {}
 
 export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
     const user = useSelector((state: RootState) => state.user.user)
-    const { register } = useFormContext<EventDTO>()
     const dto = useSelector((state: RootState) => state.form.eventData)
     const dispatch = useDispatch()
     const [items, setItems] = useState<Item[]>([])
@@ -62,13 +60,6 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
             dispatch(updateFormData({ origin: user.id }))
         }
     }, [dispatch, user, currentStep])
-
-    useEffect(() => {
-        if(dto.destiny && currentStep === 5) {
-            const num = Number(dto.destiny)
-            dispatch(updateFormData({ destiny: num }))
-        }
-    }, [dispatch, currentStep, dto.destiny])
 
     useEffect(() => {
         const unityFilter: UnityFilter = {
@@ -663,12 +654,10 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                             size='sm'
                             radius='md'
                             className='max-w-xs'
-                            {...register('destiny', {
-                                required: {
-                                    value: true,
-                                    message: 'Destinatário obrigatório!',
-                                },
-                            })}
+                            onChange={(e) => {
+                                const num = Number(e.target.value)
+                                dispatch(updateFormData({ destiny: num }))
+                            }}  
                             classNames={{
                                 label: 'text-secondary dark:text-dark-secondary',
                                 trigger:

@@ -11,6 +11,7 @@ import { saveEvent } from '@/services/eventService'
 import { RootState } from '@/store'
 import { updateFormData } from '@/store/formStore'
 import { Button } from '@nextui-org/button'
+import { useNavigate } from '@tanstack/react-router'
 import { AxiosError, AxiosResponse } from 'axios'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -22,6 +23,7 @@ export function RegisterEvent() {
     const methods = useForm<EventDTO>()
     const dto = useSelector((state: RootState) => state.form.eventData)
     const dispatch = useDispatch()
+    const navigator = useNavigate()
     const [isUpdated, setIsUpdated] = useState<boolean>(false)
 
     const steps = [
@@ -114,6 +116,7 @@ export function RegisterEvent() {
                         'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
                     duration: 3000,
                 })
+                navigator({to: '/event'})
             })
             .catch((err: AxiosError) => {
                 toast.error(

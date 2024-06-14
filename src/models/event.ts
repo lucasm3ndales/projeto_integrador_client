@@ -33,7 +33,7 @@ export interface Event {
     backDate: string
     goal: string
     participants: number
-    cost: number
+    cost: number,
     archived: boolean,
     status: EventStatus
     address: Address
@@ -49,8 +49,8 @@ export interface EventFilter {
     name?: string,
     periodicity?: string,
     status?: string,
-    startDate?: string | DateValue,
-    endDate?: string | DateValue,
+    startDate?: string,
+    endDate?: string,
     archived: boolean
 }
 

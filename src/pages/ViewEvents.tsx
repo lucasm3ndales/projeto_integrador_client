@@ -51,7 +51,6 @@ export function ViewEvents() {
     const [search, setSearch] = useState<string>('')
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
     const [filtersApplied, setFiltersApplied] = useState<boolean>(false)
-    const navigate = useNavigate()
     const [pageable, setPageable] = useState<Pageable>({
         page: 0,
         sort: '',
@@ -217,7 +216,7 @@ export function ViewEvents() {
         if (events.length === 0) {
             handleEvents()
         }
-    }, [events.length, handleEvents])
+    }, [events, events.length, handleEvents])
 
     useEffect(() => {
         if (events.length > 0 && pageable.page !== filter.page) {
@@ -227,7 +226,7 @@ export function ViewEvents() {
             }))
             handleEvents()
         }
-    }, [pageable.page, filter.page, events.length, handleEvents])
+    }, [pageable.page, filter.page, events,  events.length, handleEvents])
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -314,10 +313,10 @@ export function ViewEvents() {
                                                 <SelectItem
                                                     key={p}
                                                     value={
-                                                        p as EventPeriodicity
+                                                        p
                                                     }
                                                 >
-                                                    {p.toString()}
+                                                    {p}
                                                 </SelectItem>
                                             ),
                                         )}
@@ -365,9 +364,9 @@ export function ViewEvents() {
                                         {Object.values(EventType).map(t => (
                                             <SelectItem
                                                 key={t}
-                                                value={t as EventType}
+                                                value={t}
                                             >
-                                                {t.toString()}
+                                                {t}
                                             </SelectItem>
                                         ))}
                                     </Select>
@@ -414,9 +413,9 @@ export function ViewEvents() {
                                         {Object.values(EventStatus).map(s => (
                                             <SelectItem
                                                 key={s}
-                                                value={s as EventStatus}
+                                                value={s}
                                             >
-                                                {s.toString()}
+                                                {s}
                                             </SelectItem>
                                         ))}
                                     </Select>
@@ -463,21 +462,23 @@ export function ViewEvents() {
                                         {[10, 25, 50, 100].map(i => (
                                             <SelectItem
                                                 key={i}
-                                                value={i as number}
+                                                value={i}
                                             >
                                                 {i.toString()}
                                             </SelectItem>
                                         ))}
                                     </Select>
                                     <div className='w-80'>
-                                        <DateInput
+                                        <Input
                                             size='sm'
                                             radius='md'
                                             label='Data de Início'
+                                            type='date'
+                                            value={filter.startDate}
                                             onChange={e =>
                                                 setFilter(state => ({
                                                     ...state,
-                                                    startDate: e.toString(),
+                                                    startDate: e.target.value,
                                                 }))
                                             }
                                             classNames={{
@@ -496,15 +497,17 @@ export function ViewEvents() {
                                         />
                                     </div>
                                     <div className='w-80'>
-                                        <DateInput
+                                        <Input
                                             size='sm'
                                             radius='md'
                                             label='Data de Término'
                                             aria-placeholder='dd/mm/yyyy'
+                                            type='date'
+                                            value={filter.endDate}
                                             onChange={e =>
                                                 setFilter(state => ({
                                                     ...state,
-                                                    endDate: e.toString(),
+                                                    endDate: e.target.value,
                                                 }))
                                             }
                                             classNames={{
@@ -523,9 +526,9 @@ export function ViewEvents() {
                                         />
                                     </div>
                                     <Checkbox
-                                        isSelected={filter.archived}
                                         size='lg'
                                         radius='md'
+                                        isSelected={filter.archived}
                                         onValueChange={() =>
                                             setFilter(state => ({
                                                 ...state,

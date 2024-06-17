@@ -81,10 +81,10 @@ export const EventDetails = () => {
 
         switch (columnKey) {
             case 'origin':
-                return procedure.origin.name
+                return `${procedure.origin.name}${isUnityManager(procedure.origin)}`
                 break
             case 'destiny':
-                return procedure.destiny.name
+                return `${procedure.destiny.name}${isUnityManager(procedure.destiny)}`
                 break
             case 'createdAt':
                 return formatTimestamp(procedure.createdAt)
@@ -94,8 +94,6 @@ export const EventDetails = () => {
                 break
         }
     }, [])
-
-    console.log(event?.procedures)
 
     const documents = useMemo(() => {
         if (event && event.procedures.length > 0) {
@@ -184,20 +182,24 @@ export const EventDetails = () => {
     }
 
     const formatTimestamp = (createdAt: number): string => {
-        const formattedDate = format(
-            new Date(createdAt),
-            'dd/MM/yyyy HH:mm',
-            { timeZone: 'America/Sao_Paulo' },
-        )
+        const formattedDate = format(new Date(createdAt), 'dd/MM/yyyy HH:mm', {
+            timeZone: 'America/Sao_Paulo',
+        })
         return formattedDate
     }
 
-    // const isUnityManager = (user: User) => {
-    //     const currentDate = new Date().getDate()
-    //     const res = user.unityManagers.find()
-    // }
-
-
+    const isUnityManager = (user: User) => {
+        if (user.unityManagers && user.unityManagers.length > 0) {
+            const sorted = user.unityManagers.sort(
+                (a, b) => Number(b.startedOn) - Number(a.startedOn),
+            )
+            if (sorted[0] && !sorted[0].leftOn) {
+                return ` - ${sorted[0].unity.name}`
+            }
+            return ''
+        }
+        return ''
+    }
 
     const download = (id: number) => {
         dowloadDocuments(id)
@@ -239,8 +241,8 @@ export const EventDetails = () => {
     }
 
     return (
-        <div className='m-1 flex flex-col items-center justify-center lg:ms-24'>
-            <div className='mt-24 flex h-auto w-full flex-col space-y-8 rounded-md border border-tertiary bg-background px-2 py-4 dark:border-dark-tertiary dark:bg-dark-background lg:mt-14 lg:w-2/3'>
+        <div className='flex flex-col items-center justify-center lg:ms-24'>
+            <div className='mb-5 mt-24 flex h-auto w-full flex-col space-y-8 rounded-md border border-tertiary bg-background px-2 py-4 dark:border-dark-tertiary dark:bg-dark-background lg:mt-14 lg:w-2/3'>
                 <div className='flex'>
                     <Link to='/event'>
                         <Button
@@ -265,8 +267,8 @@ export const EventDetails = () => {
                         }}
                     >
                         <AccordionItem key={1} title='Sobre o Evento'>
-                            <div className='mb-5 flex space-x-5'>
-                                <div className='w-72'>
+                            <div className='mb-5 flex flex-col items-center space-y-4 lg:flex-row lg:space-x-5 lg:space-y-0'>
+                                <div className='w-full md:w-2/3 lg:w-72'>
                                     <Input
                                         isReadOnly
                                         label='Nome do Evento'
@@ -289,7 +291,7 @@ export const EventDetails = () => {
                                         }}
                                     />
                                 </div>
-                                <div className='w-72'>
+                                <div className='w-full md:w-2/3 lg:w-72'>
                                     <Input
                                         isReadOnly
                                         label='Tipo do evento'
@@ -312,7 +314,7 @@ export const EventDetails = () => {
                                         }}
                                     />
                                 </div>
-                                <div className='w-72'>
+                                <div className='w-full md:w-2/3 lg:w-72'>
                                     <Input
                                         isReadOnly
                                         label='Periodicidade'
@@ -335,7 +337,7 @@ export const EventDetails = () => {
                                         }}
                                     />
                                 </div>
-                                <div className='w-72'>
+                                <div className='w-full md:w-2/3 lg:w-72'>
                                     <Input
                                         isReadOnly
                                         label='N° de participantes'
@@ -363,8 +365,8 @@ export const EventDetails = () => {
                                     />
                                 </div>
                             </div>
-                            <div className='mb-5 flex space-x-5'>
-                                <div className='w-72'>
+                            <div className='mb-5 flex flex-col items-center space-y-4 lg:flex-row lg:space-x-5 lg:space-y-0'>
+                                <div className='w-full md:w-2/3 lg:w-72'>
                                     <Input
                                         isReadOnly
                                         label='Data de início'
@@ -387,7 +389,7 @@ export const EventDetails = () => {
                                         }}
                                     />
                                 </div>
-                                <div className='w-72'>
+                                <div className='w-full md:w-2/3 lg:w-72'>
                                     <Input
                                         isReadOnly
                                         label='Data de fim'
@@ -410,7 +412,7 @@ export const EventDetails = () => {
                                         }}
                                     />
                                 </div>
-                                <div className='w-72'>
+                                <div className='w-full md:w-2/3 lg:w-72'>
                                     <Input
                                         isReadOnly
                                         label='Data de Ida'
@@ -435,7 +437,7 @@ export const EventDetails = () => {
                                         }}
                                     />
                                 </div>
-                                <div className='w-72'>
+                                <div className='w-full md:w-2/3 lg:w-72'>
                                     <Input
                                         isReadOnly
                                         label='Data de volta'
@@ -461,8 +463,8 @@ export const EventDetails = () => {
                             </div>
                         </AccordionItem>
                         <AccordionItem key={2} title='Endereço do Evento'>
-                            <div className='mb-5 flex space-x-5'>
-                                <div className='w-72'>
+                            <div className='mb-5 flex flex-col items-center space-y-4 lg:flex-row lg:space-x-5 lg:space-y-0'>
+                                <div className='w-full md:w-2/3 lg:w-72'>
                                     <Input
                                         isReadOnly
                                         label='País'
@@ -487,7 +489,7 @@ export const EventDetails = () => {
                                         }}
                                     />
                                 </div>
-                                <div className='w-72'>
+                                <div className='w-full md:w-2/3 lg:w-72'>
                                     <Input
                                         isReadOnly
                                         label='Estado/Província'
@@ -512,7 +514,7 @@ export const EventDetails = () => {
                                         }}
                                     />
                                 </div>
-                                <div className='w-72'>
+                                <div className='w-full md:w-2/3 lg:w-72'>
                                     <Input
                                         isReadOnly
                                         label='Cidade'
@@ -537,7 +539,7 @@ export const EventDetails = () => {
                                         }}
                                     />
                                 </div>
-                                <div className='w-72'>
+                                <div className='w-full md:w-2/3 lg:w-72'>
                                     <Input
                                         isReadOnly
                                         label='Bairro'
@@ -565,8 +567,8 @@ export const EventDetails = () => {
                                     />
                                 </div>
                             </div>
-                            <div className='mb-5 flex space-x-5'>
-                                <div className='w-72'>
+                            <div className='mb-5 flex flex-col items-center space-y-4 lg:flex-row lg:space-x-5 lg:space-y-0'>
+                                <div className='w-full md:w-2/3 lg:w-72'>
                                     <Input
                                         isReadOnly
                                         label='Rua'
@@ -591,14 +593,18 @@ export const EventDetails = () => {
                                         }}
                                     />
                                 </div>
-                                <div className='w-72'>
+                                <div className='w-full md:w-2/3 lg:w-72'>
                                     <Input
                                         isReadOnly
                                         label='Número'
                                         size='sm'
                                         variant='bordered'
                                         radius='md'
-                                        value={event ? event.address.num : '--'}
+                                        value={
+                                            event?.address.num
+                                                ? event.address.num
+                                                : '--'
+                                        }
                                         classNames={{
                                             input: ['bg-transparent'],
                                             label: [
@@ -614,7 +620,7 @@ export const EventDetails = () => {
                                         }}
                                     />
                                 </div>
-                                <div className='w-1/3'>
+                                <div className='w-full md:w-2/3 lg:w-72'>
                                     <Input
                                         isReadOnly
                                         label='Complemento'
@@ -622,7 +628,7 @@ export const EventDetails = () => {
                                         variant='bordered'
                                         radius='md'
                                         value={
-                                            event
+                                            event?.address.complement
                                                 ? event.address.complement
                                                 : '--'
                                         }
@@ -644,7 +650,7 @@ export const EventDetails = () => {
                             </div>
                         </AccordionItem>
                         <AccordionItem key={3} title='Objetivo'>
-                            <div className='mb-5 flex w-2/3'>
+                            <div className='mb-5 flex w-full lg:w-2/3'>
                                 <Textarea
                                     isReadOnly
                                     label='Objetivo'
@@ -652,7 +658,7 @@ export const EventDetails = () => {
                                     size='lg'
                                     radius='md'
                                     minRows={6}
-                                    value={event ? event.goal : ''}
+                                    value={event?.goal ? event.goal : ''}
                                     classNames={{
                                         input: ['bg-transparent'],
                                         label: [
@@ -670,7 +676,7 @@ export const EventDetails = () => {
                             </div>
                         </AccordionItem>
                         <AccordionItem key={4} title='Documentos'>
-                            <div className='mb-5 flex w-2/3'>
+                            <div className='mb-5 flex w-full lg:w-2/3'>
                                 <Table
                                     aria-label='Documentos'
                                     classNames={{
@@ -715,8 +721,8 @@ export const EventDetails = () => {
                             </div>
                         </AccordionItem>
                         <AccordionItem key={5} title='Despesas'>
-                            <div className='mb-5 flex w-full items-center justify-between'>
-                                <div className='flex w-2/3'>
+                            <div className='mb-5 flex w-full flex-col items-center justify-between space-y-5 lg:flex-row lg:space-y-0'>
+                                <div className='flex w-full lg:w-2/3'>
                                     <Table
                                         aria-label='Despesas'
                                         classNames={{
@@ -759,14 +765,14 @@ export const EventDetails = () => {
                                         </TableBody>
                                     </Table>
                                 </div>
-                                <div className='ms-4 flex h-20 min-h-20 w-1/4 items-center justify-center rounded-md border border-tertiary bg-transparent p-2 text-xl font-semibold text-primary dark:border-dark-tertiary dark:text-dark-primary'>
+                                <div className='ms-4 flex h-20 min-h-20 w-1/2 items-center justify-center rounded-md border border-tertiary bg-transparent p-2 text-xl font-semibold text-primary dark:border-dark-tertiary dark:text-dark-primary lg:w-1/4'>
                                     Custo Total: {total}
                                 </div>
                             </div>
                         </AccordionItem>
                         <AccordionItem key={6} title='Trâmite'>
                             <div className='mb-5 flex w-full items-center justify-between'>
-                                <div className='flex w-2/3'>
+                                <div className='flex w-full lg:w-2/3'>
                                     <Table
                                         aria-label='Trâmites'
                                         classNames={{
@@ -811,12 +817,20 @@ export const EventDetails = () => {
                                         </TableBody>
                                     </Table>
                                 </div>
-                                <div className='ms-4 flex h-20 min-h-20 w-1/4 items-center justify-center rounded-md border border-tertiary bg-transparent p-2 text-xl font-semibold text-primary dark:border-dark-tertiary dark:text-dark-primary'>
-                                    TESTE
-                                </div>
                             </div>
                         </AccordionItem>
                     </Accordion>
+                </div>
+                <div className='flex w-full justify-end'>
+                    <Button
+                        onClick={}
+                        type='button'
+                        size='lg'
+                        radius='md'
+                        className='w-56 me-4 bg-primary dark:bg-dark-primary font-semibold text-background dark:text-dark-background'
+                    >
+                        Tramitar
+                    </Button>
                 </div>
             </div>
         </div>

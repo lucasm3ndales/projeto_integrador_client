@@ -12,7 +12,6 @@ import { Input } from '@nextui-org/input'
 import {
     Checkbox,
     Chip,
-    DateInput,
     Modal,
     ModalBody,
     ModalContent,
@@ -31,7 +30,7 @@ import {
     TableHeader,
     TableRow,
 } from '@nextui-org/table'
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { AxiosError, AxiosResponse } from 'axios'
 import { Square, SquareCheck } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
@@ -44,7 +43,7 @@ interface Pageable {
     size: number
     totalPages: number
 }
-
+//TODO: Bug na paginação
 export function ViewEvents() {
     const user = useSelector((state: RootState) => state.user.user)
     const [events, setEvents] = useState<Event[]>([])
@@ -55,7 +54,7 @@ export function ViewEvents() {
         page: 0,
         sort: '',
         size: 10,
-        totalPages: 1,
+        totalPages: 0,
     })
     const columnsEvents = [
         { key: 'name', label: 'NOME' },
@@ -220,6 +219,7 @@ export function ViewEvents() {
 
     useEffect(() => {
         if (events.length > 0 && pageable.page !== filter.page) {
+            console.log(filter.page + ' ' + pageable.page)
             setFilter(state => ({
                 ...state,
                 page: pageable.page,

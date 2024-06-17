@@ -4,6 +4,7 @@ import { User } from './user'
 export interface UnityManager {
     id: number
     startedOn: EpochTimeStamp | string
+    leftOn: EpochTimeStamp | string
     user: User
     unity: Unity
 }

@@ -9,22 +9,24 @@ import { StepperContent } from '@/components/StepperContent'
 import { EventDTO } from '@/models/event'
 import { saveEvent } from '@/services/eventService'
 import { RootState } from '@/store'
-import { updateFormData } from '@/store/formStore'
+import { clearFormData, updateFormData } from '@/store/formStore'
 import { Button } from '@nextui-org/button'
-import { useNavigate } from '@tanstack/react-router'
 import { AxiosError, AxiosResponse } from 'axios'
-import { useEffect, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { useCallback, useEffect, useState } from 'react'
+import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
+import { debounce } from 'lodash'
+import { Select, SelectItem } from '@nextui-org/select'
+import { Unity, UnityFilter, UnityType } from '@/models/unity'
+import { getUnities } from '@/services/unityService'
 
 export function RegisterEvent() {
     const [currentStep, setcurrentStep] = useState<number>(0)
     const methods = useForm<EventDTO>()
     const dto = useSelector((state: RootState) => state.form.eventData)
     const dispatch = useDispatch()
-    const navigator = useNavigate()
-    const [isUpdated, setIsUpdated] = useState<boolean>(false)
+    const [unities, setUnities] = useState<Unity[]>([])
 
     const steps = [
         'Dados do Evento',
@@ -44,12 +46,44 @@ export function RegisterEvent() {
         <EventForm6 currentStep={currentStep} />,
     ]
 
+    const updateDTO = useCallback(
+        debounce(() => {
+            const formValues = methods.getValues()
+            dispatch(updateFormData(formValues))
+        }, 500),
+        [methods, dispatch, debounce],
+    )
+
     useEffect(() => {
-        if (isUpdated) {
-            setcurrentStep(currentStep + 1)
-            setIsUpdated(false)
+        const subscription = methods.watch(() => {
+            updateDTO()
+        })
+        return () => subscription.unsubscribe()
+    }, [methods, updateDTO])
+
+    useEffect(() => {
+        const unityFilter: UnityFilter = {
+            type: UnityType.DEPARTAMENTO,
         }
-    }, [dto, isUpdated, currentStep])
+
+        if (unities && unities.length <= 0 && currentStep === 5) {
+            getUnities(unityFilter)
+                .then((res: AxiosResponse<Unity[]>) => {
+                    setUnities(res.data.content)
+                })
+                .catch((err: AxiosError) => {
+                    toast.error(
+                        (err?.response?.data as string) ||
+                            'Erro ao buscar unidades!',
+                        {
+                            className:
+                                'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                            duration: 3000,
+                        },
+                    )
+                })
+        }
+    }, [unities, currentStep])
 
     useEffect(() => {
         if (
@@ -98,16 +132,6 @@ export function RegisterEvent() {
         }
     }, [methods.formState.isSubmitted, methods.formState.errors])
 
-    const handleNextStep = () => {
-        const values = methods.getValues()
-        dispatch(updateFormData(values))
-        setIsUpdated(true)
-    }
-
-    const handleBackStep = () => {
-        setcurrentStep(currentStep - 1)
-    }
-
     const handleSaveEvent = () => {
         saveEvent(dto)
             .then((res: AxiosResponse<string>) => {
@@ -116,7 +140,8 @@ export function RegisterEvent() {
                         'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
                     duration: 3000,
                 })
-                navigator({to: '/event'})
+                dispatch(clearFormData())
+                window.location.reload()
             })
             .catch((err: AxiosError) => {
                 toast.error(
@@ -131,9 +156,17 @@ export function RegisterEvent() {
             })
     }
 
+    const handleNextStep = () => {
+        setcurrentStep(currentStep + 1)
+    }
+
+    const handleBackStep = () => {
+        setcurrentStep(currentStep - 1)
+    }
+
     return (
         <main className='flex w-full justify-center lg:ms-12 lg:mt-14'>
-            <div className='w-full rounded-md border border-tertiary bg-background px-4 py-6 dark:border-dark-tertiary dark:bg-dark-background lg:w-2/3'>
+            <div className='w-full rounded-md border border-tertiary bg-background px-4 py-6 dark:border-dark-tertiary dark:bg-dark-background lg:w-3/4'>
                 <div className='flex flex-col lg:flex-row'>
                     <div className='flex w-1/3 flex-col text-nowrap font-semibold'>
                         <h1 className='text-2xl text-secondary dark:text-dark-secondary'>
@@ -158,12 +191,65 @@ export function RegisterEvent() {
                             current={currentStep}
                         />
                         {currentStep === 5 && (
-                            <div className='flex'>
+                            <div className='flex lg:flex-row flex-col mt-5 w-full items-center justify-center space-y-6 lg:space-y-0 space-x-0 lg:space-x-5'>
+                                <Select
+                                    label='Departamento destinatário*'
+                                    variant='bordered'
+                                    size='sm'
+                                    description='Escolha o destinatário para o trâmite.'
+                                    radius='md'
+                                    className='max-w-xs'
+                                    {...methods.register('destiny', {
+                                        required: {
+                                            value: true,
+                                            message:
+                                                'Destinatário obrigatório!',
+                                        },
+                                        setValueAs: value => Number(value),
+                                    })}
+                                    classNames={{
+                                        label: 'text-secondary dark:text-dark-secondary',
+                                        trigger:
+                                            'bg-transaparent border border-tertiary dark:border-dark-tertiary hover:border-primary dark:hover:border-dark-primary',
+                                        listboxWrapper: 'max-h-[400px]',
+                                        errorMessage: 'text-error',
+                                        description: 'text-secondary dark:text-dark-secondary',
+                                    }}
+                                    listboxProps={{
+                                        itemClasses: {
+                                            base: [
+                                                'rounded-md',
+                                                'text-secondary dark:text-dark-secondary',
+                                                'transition-opacity',
+                                                'data-[selectable=true]:focus:bg-primary dark:data-[selectable=true]:focus:bg-dark-primary',
+                                                'data-[selectable=true]:focus:text-background dark:data-[selectable=true]:focus:text-dark-background',
+                                                'data-[pressed=true]:opacity-70',
+                                            ],
+                                        },
+                                    }}
+                                    popoverProps={{
+                                        classNames: {
+                                            base: 'before:bg-background before:dark:bg-dark-background',
+                                            content:
+                                                'p-0 border-small border-divider bg-background dark:bg-dark-background',
+                                        },
+                                    }}
+                                >
+                                    {unities.map(u => (
+                                        <SelectItem
+                                            key={u.id as number}
+                                            value={u.id as number}
+                                            className='capitalize'
+                                        >
+                                            {`${u.name.toLowerCase()} - ${u.type.toString().toLocaleLowerCase()}`}
+                                        </SelectItem>
+                                    ))}
+                                </Select>
                                 <Button
                                     type='submit'
                                     size='lg'
                                     radius='md'
-                                    className='mt-8 w-56 bg-success font-semibold text-background'
+                                    className='w-56 h-20 bg-success font-semibold text-background'
                                 >
                                     Enviar
                                 </Button>

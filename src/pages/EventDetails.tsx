@@ -1,12 +1,10 @@
 import { Event } from '@/models/event'
-import { EventExpense, Expense } from '@/models/expense'
+import { Expense } from '@/models/expense'
 import { getEvent } from '@/services/eventService'
 import { getExpenses } from '@/services/expenseService'
 import { Input, Textarea } from '@nextui-org/input'
 import { Accordion, AccordionItem, Button } from '@nextui-org/react'
-import { Select, SelectItem } from '@nextui-org/select'
 import {
-    getKeyValue,
     Table,
     TableBody,
     TableCell,
@@ -19,8 +17,8 @@ import { AxiosError, AxiosResponse } from 'axios'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
-
-interface ExpeseItems extends Expense, EventExpense {}
+import { dowloadDocuments } from '@/services/documentService'
+import { User } from '@/models/user'
 
 export const EventDetails = () => {
     const { eventId } = useParams({ strict: false })
@@ -36,6 +34,68 @@ export const EventDetails = () => {
         { key: 'type', label: 'Tipo' },
         { key: 'value', label: 'Valor' },
     ]
+    const columnsProcedures = [
+        { key: 'origin', label: 'Origem' },
+        { key: 'destiny', label: 'Destino' },
+        { key: 'createdAt', label: 'Tramitado em' },
+    ]
+
+    const renderDocumentTable = useCallback((document, columnKey) => {
+        const cellValue = document[columnKey]
+
+        switch (columnKey) {
+            case 'download':
+                return (
+                    <Button
+                        onClick={() => download(document.id)}
+                        className='bg-primary font-semibold text-background dark:bg-dark-primary dark:text-dark-background'
+                    >
+                        Download
+                    </Button>
+                )
+                break
+            default:
+                return cellValue
+                break
+        }
+    }, [])
+
+    const renderExpenseTable = useCallback((eventExpense, columnKey) => {
+        const cellValue = eventExpense[columnKey]
+
+        switch (columnKey) {
+            case 'name':
+                return eventExpense.expense.name
+                break
+            case 'type':
+                return eventExpense.expense.type
+                break
+            default:
+                return cellValue
+                break
+        }
+    }, [])
+
+    const renderProcedureTable = useCallback((procedure, columnKey) => {
+        const cellValue = procedure[columnKey]
+
+        switch (columnKey) {
+            case 'origin':
+                return procedure.origin.name
+                break
+            case 'destiny':
+                return procedure.destiny.name
+                break
+            case 'createdAt':
+                return formatTimestamp(procedure.createdAt)
+                break
+            default:
+                return cellValue
+                break
+        }
+    }, [])
+
+    console.log(event?.procedures)
 
     const documents = useMemo(() => {
         if (event && event.procedures.length > 0) {
@@ -73,59 +133,6 @@ export const EventDetails = () => {
             return format(new Date(event.backDate), 'dd/MM/yyyy')
         }
     }, [event])
-    
-    console.log(event)
-
-    const expenseItems = useMemo(() => {
-        if (
-            event &&
-            event?.eventExpenses &&
-            event.eventExpenses.length > 0 &&
-            expenses.length > 0
-        ) {
-            console.log(expenses)
-
-            const items: ExpeseItems[] = event.eventExpenses
-                .map(ev => {
-                    const matching = expenses.find(e => e.id === ev.idExpense)
-
-                    if (matching) {
-                        return {
-                            ...ev,
-                            ...matching,
-                        }
-                    }
-                    return null
-                })
-                .filter(item => item !== null)
-
-            items.forEach(i => {
-                i.type = i.type.toString().toLowerCase()
-                i.value = formatToBRL(i.value as number)
-            })
-            return items
-        }
-    }, [event, expenses])
-
-    const renderDocumentTable = useCallback((document, columnKey) => {
-        const cellValue = document[columnKey]
-
-        switch (columnKey) {
-            case 'download':
-                return (
-                    <Button
-                        onClick={download(document.id)}
-                        className='bg-primary font-semibold text-secondary dark:bg-dark-primary dark:text-dark-secondary'
-                    >
-                        Download
-                    </Button>
-                )
-                break
-            default:
-                return cellValue
-                break
-        }
-    }, [])
 
     useEffect(() => {
         if (eventId && !event) {
@@ -176,13 +183,64 @@ export const EventDetails = () => {
         }).format(value)
     }
 
+    const formatTimestamp = (createdAt: number): string => {
+        const formattedDate = format(
+            new Date(createdAt),
+            'dd/MM/yyyy HH:mm',
+            { timeZone: 'America/Sao_Paulo' },
+        )
+        return formattedDate
+    }
+
+    // const isUnityManager = (user: User) => {
+    //     const currentDate = new Date().getDate()
+    //     const res = user.unityManagers.find()
+    // }
+
+
+
     const download = (id: number) => {
-        console.log('DOWNLOAD: ' + id)
+        dowloadDocuments(id)
+            .then((res: AxiosResponse<ArrayBuffer>) => {
+                const contentType = res.headers['content-type']
+
+                const blob = new Blob([res.data], { type: contentType })
+
+                const url = window.URL.createObjectURL(blob)
+
+                const a = document.createElement('a')
+                a.style.display = 'none'
+                a.href = url
+
+                const disposition = res.headers['content-disposition']
+                const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+                const matches = filenameRegex.exec(disposition)
+                let filename = 'documento'
+                if (matches != null && matches[1]) {
+                    filename = matches[1].replace(/['"]/g, '')
+                }
+                a.download = filename
+
+                document.body.appendChild(a)
+
+                a.click()
+
+                document.body.removeChild(a)
+
+                window.URL.revokeObjectURL(url)
+            })
+            .catch(() => {
+                toast.error('Erro ao fazer download do arquivo', {
+                    className:
+                        'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                    duration: 3000,
+                })
+            })
     }
 
     return (
         <div className='m-1 flex flex-col items-center justify-center lg:ms-24'>
-            <div className='mt-12 flex h-auto w-full flex-col space-y-8 rounded-md border border-tertiary bg-background px-2 py-4 dark:border-dark-tertiary dark:bg-dark-background lg:w-2/3'>
+            <div className='mt-24 flex h-auto w-full flex-col space-y-8 rounded-md border border-tertiary bg-background px-2 py-4 dark:border-dark-tertiary dark:bg-dark-background lg:mt-14 lg:w-2/3'>
                 <div className='flex'>
                     <Link to='/event'>
                         <Button
@@ -681,9 +739,7 @@ export const EventDetails = () => {
                                             )}
                                         </TableHeader>
                                         <TableBody
-                                            items={
-                                                expenseItems ? expenseItems : []
-                                            }
+                                            items={event?.eventExpenses || []}
                                             emptyContent={
                                                 'Nenhuma Despesa Encontrada!'
                                             }
@@ -692,7 +748,7 @@ export const EventDetails = () => {
                                                 <TableRow key={item.id}>
                                                     {columnKey => (
                                                         <TableCell className='capitalize'>
-                                                            {getKeyValue(
+                                                            {renderExpenseTable(
                                                                 item,
                                                                 columnKey,
                                                             )}
@@ -709,7 +765,56 @@ export const EventDetails = () => {
                             </div>
                         </AccordionItem>
                         <AccordionItem key={6} title='Trâmite'>
-                            fdsafsdafasdfa
+                            <div className='mb-5 flex w-full items-center justify-between'>
+                                <div className='flex w-2/3'>
+                                    <Table
+                                        aria-label='Trâmites'
+                                        classNames={{
+                                            wrapper: [
+                                                'bg-transparent border border-tertiary dark:border-dark-tertiary rounded-md',
+                                            ],
+                                            th: [
+                                                'text-secondary dark:text-dark-secondary bg-transparent',
+                                            ],
+                                            emptyWrapper: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                        }}
+                                    >
+                                        <TableHeader
+                                            columns={columnsProcedures}
+                                        >
+                                            {column => (
+                                                <TableColumn key={column.key}>
+                                                    {column.label}
+                                                </TableColumn>
+                                            )}
+                                        </TableHeader>
+                                        <TableBody
+                                            items={event?.procedures || []}
+                                            emptyContent={
+                                                'Erro ao buscar trâmites!'
+                                            }
+                                        >
+                                            {item => (
+                                                <TableRow key={item.id}>
+                                                    {columnKey => (
+                                                        <TableCell className='capitalize'>
+                                                            {renderProcedureTable(
+                                                                item,
+                                                                columnKey,
+                                                            )}
+                                                        </TableCell>
+                                                    )}
+                                                </TableRow>
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                                <div className='ms-4 flex h-20 min-h-20 w-1/4 items-center justify-center rounded-md border border-tertiary bg-transparent p-2 text-xl font-semibold text-primary dark:border-dark-tertiary dark:text-dark-primary'>
+                                    TESTE
+                                </div>
+                            </div>
                         </AccordionItem>
                     </Accordion>
                 </div>

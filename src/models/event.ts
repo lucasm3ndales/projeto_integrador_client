@@ -1,7 +1,6 @@
-import { DateValue } from '@nextui-org/react'
 import { Address, AddressDTO } from './address'
 import { DocumentDTO } from './document'
-import { EventExpense } from './expense'
+import { EventExpense, EventExpenseDTO } from './expense'
 import { Procedure } from './procedure'
 
 export interface EventDTO {
@@ -19,7 +18,7 @@ export interface EventDTO {
     destiny: number
     address: AddressDTO
     documents: DocumentDTO[]
-    eventExpenses: EventExpense[]
+    eventExpenses: EventExpenseDTO[]
 }
 
 export interface Event {

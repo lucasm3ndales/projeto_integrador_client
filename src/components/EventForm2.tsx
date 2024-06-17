@@ -170,9 +170,7 @@ export const EventForm2 = () => {
                         size='sm'
                         variant='bordered'
                         radius='md'
-                        isInvalid={
-                            errors?.address?.num && 'Input-error' ? true : false
-                        }
+                        maxLength={8}
                         {...register('address.num')}
                         classNames={{
                             input: ['bg-transparent'],
@@ -195,11 +193,7 @@ export const EventForm2 = () => {
                         variant='bordered'
                         size='sm'
                         radius='md'
-                        isInvalid={
-                            errors?.address?.complement && 'Input-error'
-                                ? true
-                                : false
-                        }
+                        maxLength={255}
                         {...register('address.complement')}
                         classNames={{
                             input: ['bg-transparent'],

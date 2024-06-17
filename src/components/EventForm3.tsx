@@ -21,6 +21,7 @@ export const EventForm3 = () => {
                         placeholder='Qual o objetivo da participação no evento ?'
                         size='lg'
                         radius='md'
+                        maxLength={500}
                         minRows={6}
                         isInvalid={errors?.goal && 'Input-error' ? true : false}
                         {...register('goal', {

@@ -17,7 +17,7 @@ const initialState: FormState = {
         backDate: '',
         goal: '',
         participants: 0,
-        cost: undefined,
+        cost: 0.00,
         origin: undefined,
         destiny: undefined,
         address: {
@@ -48,8 +48,11 @@ const formSlice = createSlice({
                 },
             }
         },
+        clearFormData: (state) => {
+            state.eventData = initialState.eventData
+        },
     },
 })
 
-export const { updateFormData } = formSlice.actions
+export const { updateFormData, clearFormData } = formSlice.actions
 export default formSlice.reducer

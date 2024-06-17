@@ -10,22 +10,6 @@ export const EventForm1 = () => {
         formState: { errors },
     } = useFormContext<EventDTO>()
 
-    const eventTypes = [
-        EventType.OUTROS,
-        EventType.SIMPOSIO,
-        EventType.CONGRESSO,
-        EventType.TECNOLOGIA,
-        EventType.EXPOFEIRA,
-        EventType.FEIRA_LIVRE,
-    ]
-    const eventPeriodicities = [
-        EventPeriodicity.ANUALMENTE,
-        EventPeriodicity.SEMESTRALMENTE,
-        EventPeriodicity.TRIMESTRALMENTE,
-        EventPeriodicity.SEMANALMENTE,
-        EventPeriodicity.MENSALMENTE,
-    ]
-
     return (
         <div className='flex h-auto w-full flex-col items-center justify-center space-y-5'>
             <div className='flex w-full flex-col items-center justify-center space-y-4 lg:flex-row lg:space-x-10 lg:space-y-0'>
@@ -95,7 +79,7 @@ export const EventForm1 = () => {
                             },
                         }}
                     >
-                        {eventTypes.map(t => (
+                        {Object.values(EventType).map(t => (
                             <SelectItem key={t} value={t as EventType}>
                                 {t.toString()}
                             </SelectItem>
@@ -142,7 +126,7 @@ export const EventForm1 = () => {
                             },
                         }}
                     >
-                        {eventPeriodicities.map(p => (
+                        {Object.values(EventPeriodicity).map(p => (
                             <SelectItem key={p} value={p as EventPeriodicity}>
                                 {p.toString()}
                             </SelectItem>

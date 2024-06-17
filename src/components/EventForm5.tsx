@@ -17,7 +17,7 @@ import { toast } from 'sonner'
 import { updateFormData } from '@/store/formStore'
 import { RootState } from '@/store'
 import { EventDTO } from '@/models/event'
-import { EventExpense, Expense, ExpenseFilter } from '@/models/expense'
+import { EventExpenseDTO, Expense, ExpenseFilter } from '@/models/expense'
 import { getExpenses } from '@/services/expenseService'
 import { AxiosError, AxiosResponse } from 'axios'
 
@@ -25,7 +25,7 @@ interface FormType {
     currentStep: number
 }
 
-interface Item extends Expense, EventExpense {}
+interface Item extends Expense, EventExpenseDTO {}
 
 export const EventForm5: React.FC<FormType> = ({ currentStep }) => {
     const {
@@ -37,13 +37,13 @@ export const EventForm5: React.FC<FormType> = ({ currentStep }) => {
     const dispatch = useDispatch()
     const [expenses, setExpenses] = useState<Expense[]>([])
     const [total, setTotal] = useState<string>('')
+    const [items, setItems] = useState<Item[]>([])
     const [cost, setCost] = useState<number>(0.0)
-    const [ev, setEv] = useState<EventExpense>({
+    const [ev, setEv] = useState<EventExpenseDTO>({
         idExpense: null,
         justification: '',
-        value: 0.0,
+        value: '',
     })
-    const [items, setItems] = useState<Item[]>([])
     const columns = [
         { key: 'name', label: 'Nome' },
         { key: 'type', label: 'Tipo' },
@@ -225,8 +225,8 @@ export const EventForm5: React.FC<FormType> = ({ currentStep }) => {
                         >
                             {expenses.map(e => (
                                 <SelectItem
-                                    key={e.id}
-                                    value={e.id}
+                                    key={e.id as number}
+                                    value={e.id as number}
                                     className='capitalize'
                                 >
                                     {`${e.name} - ${e.type.toString().toLowerCase()}`}
@@ -241,6 +241,7 @@ export const EventForm5: React.FC<FormType> = ({ currentStep }) => {
                             variant='bordered'
                             type='number'
                             radius='md'
+                            value={ev.value as string}
                             min={0}
                             isInvalid={errors?.eventExpenses ? true : false}
                             onChange={e =>

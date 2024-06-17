@@ -1,5 +1,4 @@
-import { EventDTO } from '@/models/event'
-import { EventExpense, Expense, ExpenseFilter } from '@/models/expense'
+import { EventExpenseDTO, Expense, ExpenseFilter } from '@/models/expense'
 import { Unity, UnityFilter, UnityType } from '@/models/unity'
 import { getExpenses } from '@/services/expenseService'
 import { getUnities } from '@/services/unityService'
@@ -7,7 +6,6 @@ import { RootState } from '@/store'
 import { updateFormData } from '@/store/formStore'
 import { Input, Textarea } from '@nextui-org/input'
 import { ScrollShadow } from '@nextui-org/scroll-shadow'
-import { Select, SelectItem } from '@nextui-org/select'
 import {
     getKeyValue,
     Table,
@@ -26,7 +24,7 @@ interface FormType {
     currentStep: number
 }
 
-interface Item extends Expense, EventExpense {}
+interface Item extends Expense, EventExpenseDTO {}
 
 export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
     const user = useSelector((state: RootState) => state.user.user)
@@ -111,15 +109,6 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
         }
     }, [expenses, currentStep, dto.eventExpenses])
 
-    function formatToBRL(value: number): string {
-        return new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL',
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        }).format(value)
-    }
-
     useEffect(() => {
         if (
             dto.eventExpenses &&
@@ -153,6 +142,15 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
         }
     }, [currentStep, dto.eventExpenses, expenses])
 
+    function formatToBRL(value: number): string {
+        return new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(value)
+    }
+
     return (
         <div className='flex h-[475px] w-full'>
             <ScrollShadow className='h-[200] w-full p-2'>
@@ -160,8 +158,8 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                     <div className='mb-3 flex text-lg font-semibold text-secondary dark:text-dark-secondary'>
                         Sobre o Evento
                     </div>
-                    <div className='mb-5 flex space-x-5'>
-                        <div className='w-72'>
+                    <div className='mb-5 flex flex-col items-center space-y-4 lg:space-y-0 lg:flex-row lg:space-x-5'>
+                        <div className='lg:w-72 md:w-2/3 w-full'>
                             <Input
                                 isReadOnly
                                 label='Nome do Evento'
@@ -184,7 +182,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                                 }}
                             />
                         </div>
-                        <div className='w-72'>
+                        <div className='lg:w-72 md:w-2/3 w-full'>
                             <Input
                                 isReadOnly
                                 label='Tipo do evento'
@@ -207,7 +205,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                                 }}
                             />
                         </div>
-                        <div className='w-72'>
+                        <div className='lg:w-72 md:w-2/3 w-full'>
                             <Input
                                 isReadOnly
                                 label='Periodicidade'
@@ -230,7 +228,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                                 }}
                             />
                         </div>
-                        <div className='w-72'>
+                        <div className='lg:w-72 md:w-2/3 w-full'>
                             <Input
                                 isReadOnly
                                 label='N° de participantes'
@@ -254,8 +252,8 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                             />
                         </div>
                     </div>
-                    <div className='mb-5 flex space-x-5'>
-                        <div className='w-72'>
+                    <div className='mb-5 flex flex-col items-center space-y-4 lg:space-y-0 lg:flex-row lg:space-x-5'>
+                        <div className='lg:w-72 md:w-2/3 w-full'>
                             <Input
                                 isReadOnly
                                 label='Data de início'
@@ -278,7 +276,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                                 }}
                             />
                         </div>
-                        <div className='w-72'>
+                        <div className='lg:w-72 md:w-2/3 w-full'>
                             <Input
                                 isReadOnly
                                 label='Data de fim'
@@ -301,7 +299,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                                 }}
                             />
                         </div>
-                        <div className='w-72'>
+                        <div className='lg:w-72 md:w-2/3 w-full'>
                             <Input
                                 isReadOnly
                                 label='Data de Ida'
@@ -324,7 +322,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                                 }}
                             />
                         </div>
-                        <div className='w-72'>
+                        <div className='lg:w-72 md:w-2/3 w-full'>
                             <Input
                                 isReadOnly
                                 label='Data de volta'
@@ -352,8 +350,8 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                     <div className='mb-3 flex text-lg font-semibold text-secondary dark:text-dark-secondary'>
                         Endereço
                     </div>
-                    <div className='mb-5 flex space-x-5'>
-                        <div className='w-72'>
+                    <div className='mb-5 flex flex-col items-center space-y-4 lg:space-y-0 lg:flex-row lg:space-x-5'>
+                        <div className='lg:w-72 md:w-2/3 w-full'>
                             <Input
                                 isReadOnly
                                 label='País'
@@ -376,7 +374,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                                 }}
                             />
                         </div>
-                        <div className='w-72'>
+                        <div className='lg:w-72 md:w-2/3 w-full'>
                             <Input
                                 isReadOnly
                                 label='Estado/Província'
@@ -399,7 +397,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                                 }}
                             />
                         </div>
-                        <div className='w-72'>
+                        <div className='lg:w-72 md:w-2/3 w-full'>
                             <Input
                                 isReadOnly
                                 label='Cidade'
@@ -422,7 +420,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                                 }}
                             />
                         </div>
-                        <div className='w-72'>
+                        <div className='lg:w-72 md:w-2/3 w-full'>
                             <Input
                                 isReadOnly
                                 label='Bairro'
@@ -446,8 +444,8 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                             />
                         </div>
                     </div>
-                    <div className='mb-5 flex space-x-5'>
-                        <div className='w-72'>
+                    <div className='mb-5 flex flex-col items-center space-y-4 lg:space-y-0 lg:flex-row lg:space-x-5'>
+                        <div className='lg:w-72 md:w-2/3 w-full'>
                             <Input
                                 isReadOnly
                                 label='Rua'
@@ -470,7 +468,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                                 }}
                             />
                         </div>
-                        <div className='w-72'>
+                        <div className='lg:w-72 md:w-2/3 w-full'>
                             <Input
                                 isReadOnly
                                 label='Número'
@@ -495,7 +493,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                                 }}
                             />
                         </div>
-                        <div className='w-1/3'>
+                        <div className='lg:w-72 md:w-2/3 w-full'>
                             <Input
                                 isReadOnly
                                 label='Complemento'
@@ -527,7 +525,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                     <div className='mb-3 flex text-lg font-semibold text-secondary dark:text-dark-secondary'>
                         Objetivo
                     </div>
-                    <div className='mb-5 flex w-2/3'>
+                    <div className='mb-5 flex lg:w-2/3 w-full'>
                         <Textarea
                             isReadOnly
                             label='Objetivo'
@@ -555,7 +553,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                     <div className='mb-3 flex text-lg font-semibold text-secondary dark:text-dark-secondary'>
                         Documentos
                     </div>
-                    <div className='mb-5 flex w-2/3'>
+                    <div className='mb-5 flex lg:w-2/3 w-full'>
                         <Table
                             aria-label='Example table with dynamic content'
                             classNames={{
@@ -597,8 +595,8 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                     <div className='mb-3 flex text-lg font-semibold text-secondary dark:text-dark-secondary'>
                         Despesas
                     </div>
-                    <div className='mb-5 flex w-full items-center justify-between'>
-                        <div className='flex w-2/3'>
+                    <div className='mb-5 flex lg:flex-row flex-col space-y-5 lg:space-y-0 w-full items-center justify-between'>
+                        <div className='flex lg:w-2/3 w-full'>
                             <Table
                                 aria-label='Example table with dynamic content'
                                 classNames={{
@@ -639,62 +637,9 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                                 </TableBody>
                             </Table>
                         </div>
-                        <div className='ms-4 flex h-20 min-h-20 w-1/4 items-center justify-center rounded-md border border-tertiary bg-transparent p-2 text-xl font-semibold text-primary dark:border-dark-tertiary dark:text-dark-primary'>
+                        <div className='ms-4 flex h-20 min-h-20 lg:w-1/4 w-1/2 items-center justify-center rounded-md border border-tertiary bg-transparent p-2 text-xl font-semibold text-primary dark:border-dark-tertiary dark:text-dark-primary'>
                             Custo Total: {total}
                         </div>
-                    </div>
-                    <hr className='mb-5 w-full border-tertiary dark:border-dark-tertiary' />
-                    <div className='mb-3 flex text-lg font-semibold text-secondary dark:text-dark-secondary'>
-                        Tramitar
-                    </div>
-                    <div className='mb-5 flex'>
-                        <Select
-                            label='Departamento destinatário*'
-                            variant='bordered'
-                            size='sm'
-                            radius='md'
-                            className='max-w-xs'
-                            onChange={(e) => {
-                                const num = Number(e.target.value)
-                                dispatch(updateFormData({ destiny: num }))
-                            }}  
-                            classNames={{
-                                label: 'text-secondary dark:text-dark-secondary',
-                                trigger:
-                                    'bg-transaparent border border-tertiary dark:border-dark-tertiary hover:border-primary dark:hover:border-dark-primary',
-                                listboxWrapper: 'max-h-[400px]',
-                                errorMessage: 'text-error',
-                            }}
-                            listboxProps={{
-                                itemClasses: {
-                                    base: [
-                                        'rounded-md',
-                                        'text-secondary dark:text-dark-secondary',
-                                        'transition-opacity',
-                                        'data-[selectable=true]:focus:bg-primary dark:data-[selectable=true]:focus:bg-dark-primary',
-                                        'data-[selectable=true]:focus:text-background dark:data-[selectable=true]:focus:text-dark-background',
-                                        'data-[pressed=true]:opacity-70',
-                                    ],
-                                },
-                            }}
-                            popoverProps={{
-                                classNames: {
-                                    base: 'before:bg-background before:dark:bg-dark-background',
-                                    content:
-                                        'p-0 border-small border-divider bg-background dark:bg-dark-background',
-                                },
-                            }}
-                        >
-                            {unities.map(u => (
-                                <SelectItem
-                                    key={u.id as number}
-                                    value={u.id as number}
-                                    className='capitalize'
-                                >
-                                    {`${u.name.toLowerCase()} - ${u.type.toString().toLocaleLowerCase()}`}
-                                </SelectItem>
-                            ))}
-                        </Select>
                     </div>
                 </div>
             </ScrollShadow>

@@ -27,36 +27,23 @@ export const EventForm4 = () => {
     } = useFormContext<EventDTO>()
     const dto = useSelector((state: RootState) => state.form.eventData)
     const dispatch = useDispatch()
+    const [items, setItems] = useState<DocumentDTO[]>([])
+    const fileInputRef = useRef(null)
     const [document, setDocument] = useState<DocumentDTO>({
         name: '',
         type: '',
         extension: '',
         document: '',
     })
-    const [items, setItems] = useState<DocumentDTO[]>([])
-    const fileInputRef = useRef(null)
-
-    useEffect(() => {
-        setItems(dto.documents || [])
-    }, [dto.documents])
-
-    const extensions = [
-        Extensions.PDF,
-        Extensions.TXT,
-        Extensions.ODT,
-        Extensions.DOC,
-        Extensions.DOCX,
-    ]
-    const docTypes = [
-        DocumentType.OUTROS,
-        DocumentType.CONTRATO,
-        DocumentType.ALVARA,
-    ]
     const columns = [
         { key: 'name', label: 'Nome' },
         { key: 'type', label: 'Tipo' },
         { key: 'actions', label: 'Ações' },
     ]
+
+    useEffect(() => {
+        setItems(dto.documents || [])
+    }, [dto.documents])
 
     const setFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e && e.target.files && e.target.files.length > 0) {''
@@ -67,7 +54,7 @@ export const EventForm4 = () => {
                     const docName = doc.name
                     const docExtension = docName.split('.').pop()?.toUpperCase() as keyof typeof Extensions
 
-                    if (docExtension && extensions.includes(Extensions[docExtension])) {
+                    if (docExtension && Object.values(Extensions).includes(Extensions[docExtension])) {
                         setDocument({
                             ...document,
                             extension: docExtension,
@@ -120,8 +107,11 @@ export const EventForm4 = () => {
             const currentDocuments = getValues('documents') || []
             const updatedDocuments = [...currentDocuments, document]
             setValue('documents', updatedDocuments)
+
             dispatch(updateFormData({ documents: updatedDocuments }))
+
             setDocument({ name: '', type: '', extension: '', document: '' })
+
             if (fileInputRef.current) {
                 (fileInputRef.current as HTMLInputElement).value = ''
             }
@@ -223,8 +213,8 @@ export const EventForm4 = () => {
                                 },
                             }}
                         >
-                            {docTypes.map(t => (
-                                <SelectItem key={t} value={t as DocumentType}>
+                            {Object.values(DocumentType).map(t => (
+                                <SelectItem key={t} value={t}>
                                     {t.toString()}
                                 </SelectItem>
                             ))}

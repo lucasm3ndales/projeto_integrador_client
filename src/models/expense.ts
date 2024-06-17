@@ -1,15 +1,24 @@
 
 
 export interface Expense {
-    id: number,
+    id: number | null,
     name: string,
     type: string | ExpenseType,
 }
 
-export interface EventExpense {
+export interface EventExpenseDTO {
     idExpense: number | null,
     justification: string,
     value: number | string
+}
+
+export interface EventExpense {
+    expense: Expense,
+    id: number | null,
+    justification: string,
+    value: number | string,
+    createdAt: EpochTimeStamp,
+    updatedAt: EpochTimeStamp
 }
 
 export enum ExpenseType {

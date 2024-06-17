@@ -3,7 +3,7 @@ import { User } from './user'
 
 export interface Procedure {
     id: number
-    createdAt: EpochTimeStamp | string
+    createdAt: EpochTimeStamp | Date
     origin: User
     destiny: User
     documents: Document[]

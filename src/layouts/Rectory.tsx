@@ -6,7 +6,6 @@ import {
     CircleUserRound,
     CircleX,
     Component,
-    HandCoins,
     Home,
     LogOut,
     Menu,
@@ -35,7 +34,7 @@ const containerVariants = {
     },
 }
 
-export function Servant() {
+export function Rectory() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -92,25 +91,19 @@ export function Servant() {
                             onClick={() => setIsOpen(false)}
                         />
                     </div>
-                    <Link to='/servant'>
+                    <Link to='/rectory'>
                         <div className='text-md itens-center flex h-auto w-auto rounded-md bg-transparent p-1 font-semibold text-secondary hover:bg-tertiary hover:bg-opacity-5 hover:text-primary dark:text-dark-secondary dark:hover:bg-dark-tertiary dark:hover:text-dark-primary'>
                             <Home className='me-3 h-6 w-6' />
                             Início
                         </div>
                     </Link>
-                    <Link to='/event-serv'>
+                    <Link to='/event-rec'>
                         <div className='text-md itens-center flex h-auto w-auto rounded-md bg-transparent p-1 font-semibold text-secondary hover:bg-tertiary hover:bg-opacity-5 hover:text-primary dark:text-dark-secondary dark:hover:bg-dark-tertiary dark:hover:text-dark-primary'>
                             <BookMarked className='me-3 h-6 w-6' />
                             Eventos
                         </div>
                     </Link>
-                    <Link to='/expenses'>
-                        <div className='text-md itens-center flex h-auto w-auto rounded-md bg-transparent p-1 font-semibold text-secondary hover:bg-tertiary hover:bg-opacity-5 hover:text-primary dark:text-dark-secondary dark:hover:bg-dark-tertiary dark:hover:text-dark-primary'>
-                            <HandCoins className='me-3 h-6 w-6' />
-                            Despesas
-                        </div>
-                    </Link>
-                    <Link to='/departament'>
+                    <Link to='/departament-rec'>
                         <div className='text-md itens-center flex h-auto w-auto rounded-md bg-transparent p-1 font-semibold text-secondary hover:bg-tertiary hover:bg-opacity-5 hover:text-primary dark:text-dark-secondary dark:hover:bg-dark-tertiary dark:hover:text-dark-primary'>
                             <Component className='me-3 h-6 w-6' />
                             Departamentos
@@ -147,7 +140,7 @@ export function Servant() {
                 <div className='text-2xl font-bold text-primary dark:text-dark-primary'>
                     Logo
                 </div>
-                <Link to='/servant'>
+                <Link to='/rectory'>
                     <Tooltip
                         content='Início'
                         placement='right-end'
@@ -163,7 +156,7 @@ export function Servant() {
                         </div>
                     </Tooltip>
                 </Link>
-                <Link to='/event-serv'>
+                <Link to='/event-rec'>
                     <Tooltip
                         content='Eventos'
                         placement='right-end'
@@ -179,23 +172,7 @@ export function Servant() {
                         </div>
                     </Tooltip>
                 </Link>
-                <Link to='/expense'>
-                    <Tooltip
-                        content='Despesas'
-                        placement='right-end'
-                        classNames={{
-                            base: ['text-secondary dark:text-dark-secondary'],
-                            content: [
-                                'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background',
-                            ],
-                        }}
-                    >
-                        <div className='h-auto w-auto rounded-md bg-transparent p-1 hover:bg-tertiary hover:bg-opacity-5 dark:hover:bg-dark-tertiary'>
-                            <HandCoins className='h-8 w-8 text-secondary hover:text-primary dark:text-dark-secondary dark:hover:text-dark-primary' />
-                        </div>
-                    </Tooltip>
-                </Link>
-                <Link to='/departament'>
+                <Link to='/departament-rec'>
                     <Tooltip
                         content='Departamentos'
                         placement='right-end'

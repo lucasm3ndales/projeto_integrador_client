@@ -1,6 +1,6 @@
 import { ServantEvent } from '@/pages/ServantEvent'
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_servant/event')({
+export const Route = createFileRoute('/_servant/event-serv')({
     component: () => <ServantEvent />,
 })

@@ -6,3 +6,4 @@ import { instance } from './axiosConfig'
 export const getExpenses = async (filters: ExpenseFilter): Promise<AxiosResponse<Expense[]>> => {
     return await instance.get('/expense/expenses', { params:  filters  })
 }
+

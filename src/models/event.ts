@@ -23,21 +23,23 @@ export interface EventDTO {
 
 export interface Event {
     id: number,
-    name: string
-    type: EventType
-    periodicity: EventPeriodicity
-    startDate: string
-    endDate: string
-    departureDate: string
-    backDate: string
-    goal: string
-    participants: number
+    name: string,
+    type: EventType,
+    periodicity: EventPeriodicity,
+    startDate: string,
+    endDate: string,
+    departureDate: string,
+    backDate: string,
+    goal: string,
+    participants: number,
     cost: number,
     archived: boolean,
-    status: EventStatus
-    address: Address
-    procedures: Procedure[]
-    eventExpenses: EventExpense[]
+    contributionDep: number,
+    contributionReit: number
+    status: EventStatus,
+    address: Address,
+    procedures: Procedure[],
+    eventExpenses: EventExpense[],
 }
 
 export interface EventFilter {
@@ -52,6 +54,19 @@ export interface EventFilter {
     endDate?: string,
     archived: boolean
 }
+
+export interface ContributionDTO {
+    eventId: number | null,
+    userId: number | null,
+    contribution: number | string
+}
+
+export interface EventStatusDTO {
+    eventId: number | null,
+    userId: number | null,
+    status: EventStatus
+}
+
 
 export enum EventType {
     OUTROS = 'OUTROS',

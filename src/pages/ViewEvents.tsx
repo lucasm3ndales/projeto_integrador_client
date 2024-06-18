@@ -5,6 +5,7 @@ import {
     EventStatus,
     EventType,
 } from '@/models/event'
+import { Role } from '@/models/user'
 import { getEvents } from '@/services/eventService'
 import { RootState } from '@/store'
 import { Button } from '@nextui-org/button'
@@ -43,7 +44,7 @@ interface Pageable {
     size: number
     totalPages: number
 }
-//TODO: Bug na paginação
+
 export function ViewEvents() {
     const user = useSelector((state: RootState) => state.user.user)
     const [events, setEvents] = useState<Event[]>([])
@@ -143,40 +144,55 @@ export function ViewEvents() {
                 }
                 break
             case 'procedure':
-                return (
-                    <Link to='/details/$eventId' params={{eventId: event.id}}>
-                        <Button
-                            size='md'
-                            className='bg-secondary font-semibold text-background dark:bg-dark-secondary dark:text-dark-background'
+                if (user?.role === Role.PRO_REITOR) {
+                    return (
+                        <Link
+                            to={'/details-rec/$eventId'}
+                            params={{ eventId: event.id }}
                         >
-                            Detalhes
-                        </Button>
-                    </Link>
-                )
+                            <Button
+                                size='md'
+                                className='bg-secondary font-semibold text-background dark:bg-dark-secondary dark:text-dark-background'
+                            >
+                                Detalhes
+                            </Button>
+                        </Link>
+                    )
+                } else if (user?.role === Role.CHEFE_DEPARTAMENTO) {
+                    return (
+                        <Link
+                            to={'/details-dep/$eventId'}
+                            params={{ eventId: event.id }}
+                        >
+                            <Button
+                                size='md'
+                                className='bg-secondary font-semibold text-background dark:bg-dark-secondary dark:text-dark-background'
+                            >
+                                Detalhes
+                            </Button>
+                        </Link>
+                    )
+                } else {
+                    return (
+                        <Link
+                            to={'/details-serv/$eventId'}
+                            params={{ eventId: event.id }}
+                        >
+                            <Button
+                                size='md'
+                                className='bg-secondary font-semibold text-background dark:bg-dark-secondary dark:text-dark-background'
+                            >
+                                Detalhes
+                            </Button>
+                        </Link>
+                    )
+                }
                 break
             default:
                 return cellValue
                 break
         }
     }, [])
-
-    const applyFilters = () => {
-        setFiltersApplied(true)
-    }
-
-    const cleanFilters = () => {
-        setFilter({
-            sort: '',
-            size: 10,
-            name: '',
-            periodicity: '',
-            status: '',
-            startDate: '',
-            endDate: '',
-            archived: false,
-        })
-        setFiltersApplied(true)
-    }
 
     const handleEvents = useCallback(() => {
         if (user) {
@@ -205,28 +221,10 @@ export function ViewEvents() {
     }, [user, filter])
 
     useEffect(() => {
-        if (filtersApplied) {
-            handleEvents()
-            setFiltersApplied(false)
-        }
-    }, [filtersApplied, handleEvents])
-
-    useEffect(() => {
         if (events.length === 0) {
             handleEvents()
         }
     }, [events, events.length, handleEvents])
-
-    useEffect(() => {
-        if (events.length > 0 && pageable.page !== filter.page) {
-            console.log(filter.page + ' ' + pageable.page)
-            setFilter(state => ({
-                ...state,
-                page: pageable.page,
-            }))
-            handleEvents()
-        }
-    }, [pageable.page, filter.page, events,  events.length, handleEvents])
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -242,8 +240,43 @@ export function ViewEvents() {
         return () => clearTimeout(handler)
     }, [search, filter.name, handleEvents])
 
+    useEffect(() => {
+        if (filtersApplied) {
+            handleEvents()
+            setFiltersApplied(false)
+        }
+    }, [filtersApplied, handleEvents])
+
+    useEffect(() => {
+        if (pageable.page != filter.page) {
+            setFilter(state => ({
+                ...state,
+                page: pageable.page,
+            }))
+            setFiltersApplied(true)
+        }
+    }, [pageable.page, filter.page, handleEvents])
+
+    const applyFilters = () => {
+        setFiltersApplied(true)
+    }
+
+    const cleanFilters = () => {
+        setFilter({
+            sort: '',
+            size: 10,
+            name: '',
+            periodicity: '',
+            status: '',
+            startDate: '',
+            endDate: '',
+            archived: false,
+        })
+        setFiltersApplied(true)
+    }
+
     return (
-        <main className='mt-5 flex w-full justify-center lg:ms-12 lg:mt-8'>
+        <main className='flex w-full justify-center lg:ms-12'>
             <Modal
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
@@ -310,12 +343,7 @@ export function ViewEvents() {
                                     >
                                         {Object.values(EventPeriodicity).map(
                                             p => (
-                                                <SelectItem
-                                                    key={p}
-                                                    value={
-                                                        p
-                                                    }
-                                                >
+                                                <SelectItem key={p} value={p}>
                                                     {p}
                                                 </SelectItem>
                                             ),
@@ -362,10 +390,7 @@ export function ViewEvents() {
                                         }}
                                     >
                                         {Object.values(EventType).map(t => (
-                                            <SelectItem
-                                                key={t}
-                                                value={t}
-                                            >
+                                            <SelectItem key={t} value={t}>
                                                 {t}
                                             </SelectItem>
                                         ))}
@@ -411,10 +436,7 @@ export function ViewEvents() {
                                         }}
                                     >
                                         {Object.values(EventStatus).map(s => (
-                                            <SelectItem
-                                                key={s}
-                                                value={s}
-                                            >
+                                            <SelectItem key={s} value={s}>
                                                 {s}
                                             </SelectItem>
                                         ))}
@@ -460,10 +482,7 @@ export function ViewEvents() {
                                         }}
                                     >
                                         {[10, 25, 50, 100].map(i => (
-                                            <SelectItem
-                                                key={i}
-                                                value={i}
-                                            >
+                                            <SelectItem key={i} value={i}>
                                                 {i.toString()}
                                             </SelectItem>
                                         ))}
@@ -577,7 +596,7 @@ export function ViewEvents() {
                 </ModalContent>
             </Modal>
 
-            <div className='flex w-full flex-col items-center lg:w-2/3 '>
+            <div className='flex w-full flex-col items-center lg:w-2/3 mt-5  lg:mt-8'>
                 <div className='flex h-auto w-full flex-col items-center  space-y-3 rounded-md border border-tertiary px-2 py-4 shadow-lg dark:border-dark-tertiary md:w-3/5 lg:w-[450px]'>
                     <Input
                         label='Pesquisar'
@@ -653,14 +672,13 @@ export function ViewEvents() {
                             size='md'
                             variant='flat'
                             total={pageable.totalPages}
-                            page={pageable.page}
-                            onChange={(newPage: number) =>
+                            page={pageable.page + 1}
+                            onChange={(p: number) =>
                                 setPageable(state => ({
                                     ...state,
-                                    page: newPage,
+                                    page: p - 1,
                                 }))
                             }
-                            initialPage={1}
                             classNames={{
                                 wrapper:
                                     'bg-background dark:bg-dark-background',

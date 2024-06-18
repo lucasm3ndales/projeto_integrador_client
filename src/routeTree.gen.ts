@@ -14,12 +14,20 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as RegisterImport } from './routes/register'
 import { Route as ModuleImport } from './routes/module'
 import { Route as ServantImport } from './routes/_servant'
+import { Route as RectoryImport } from './routes/_rectory'
+import { Route as DepartamentImport } from './routes/_departament'
 import { Route as IndexImport } from './routes/index'
 import { Route as ServantServantImport } from './routes/_servant/servant'
 import { Route as ServantExpenseImport } from './routes/_servant/expense'
-import { Route as ServantEventImport } from './routes/_servant/event'
-import { Route as ServantDepartamentImport } from './routes/_servant/departament'
-import { Route as ServantDetailsEventIdImport } from './routes/_servant/details.$eventId'
+import { Route as ServantEventServImport } from './routes/_servant/event-serv'
+import { Route as RectoryRectoryImport } from './routes/_rectory/rectory'
+import { Route as RectoryEventRecImport } from './routes/_rectory/event-rec'
+import { Route as RectoryDepartamentRecImport } from './routes/_rectory/departament-rec'
+import { Route as DepartamentEventDepImport } from './routes/_departament/event-dep'
+import { Route as DepartamentDepartamentImport } from './routes/_departament/departament'
+import { Route as ServantDetailsServEventIdImport } from './routes/_servant/details-serv.$eventId'
+import { Route as RectoryDetailsRecEventIdImport } from './routes/_rectory/details-rec.$eventId'
+import { Route as DepartamentDetailsDepEventIdImport } from './routes/_departament/details-dep.$eventId'
 
 // Create/Update Routes
 
@@ -38,6 +46,16 @@ const ServantRoute = ServantImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const RectoryRoute = RectoryImport.update({
+  id: '/_rectory',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DepartamentRoute = DepartamentImport.update({
+  id: '/_departament',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
@@ -53,20 +71,51 @@ const ServantExpenseRoute = ServantExpenseImport.update({
   getParentRoute: () => ServantRoute,
 } as any)
 
-const ServantEventRoute = ServantEventImport.update({
-  path: '/event',
+const ServantEventServRoute = ServantEventServImport.update({
+  path: '/event-serv',
   getParentRoute: () => ServantRoute,
 } as any)
 
-const ServantDepartamentRoute = ServantDepartamentImport.update({
+const RectoryRectoryRoute = RectoryRectoryImport.update({
+  path: '/rectory',
+  getParentRoute: () => RectoryRoute,
+} as any)
+
+const RectoryEventRecRoute = RectoryEventRecImport.update({
+  path: '/event-rec',
+  getParentRoute: () => RectoryRoute,
+} as any)
+
+const RectoryDepartamentRecRoute = RectoryDepartamentRecImport.update({
+  path: '/departament-rec',
+  getParentRoute: () => RectoryRoute,
+} as any)
+
+const DepartamentEventDepRoute = DepartamentEventDepImport.update({
+  path: '/event-dep',
+  getParentRoute: () => DepartamentRoute,
+} as any)
+
+const DepartamentDepartamentRoute = DepartamentDepartamentImport.update({
   path: '/departament',
+  getParentRoute: () => DepartamentRoute,
+} as any)
+
+const ServantDetailsServEventIdRoute = ServantDetailsServEventIdImport.update({
+  path: '/details-serv/$eventId',
   getParentRoute: () => ServantRoute,
 } as any)
 
-const ServantDetailsEventIdRoute = ServantDetailsEventIdImport.update({
-  path: '/details/$eventId',
-  getParentRoute: () => ServantRoute,
+const RectoryDetailsRecEventIdRoute = RectoryDetailsRecEventIdImport.update({
+  path: '/details-rec/$eventId',
+  getParentRoute: () => RectoryRoute,
 } as any)
+
+const DepartamentDetailsDepEventIdRoute =
+  DepartamentDetailsDepEventIdImport.update({
+    path: '/details-dep/$eventId',
+    getParentRoute: () => DepartamentRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -74,6 +123,14 @@ declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/_departament': {
+      preLoaderRoute: typeof DepartamentImport
+      parentRoute: typeof rootRoute
+    }
+    '/_rectory': {
+      preLoaderRoute: typeof RectoryImport
       parentRoute: typeof rootRoute
     }
     '/_servant': {
@@ -88,12 +145,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterImport
       parentRoute: typeof rootRoute
     }
-    '/_servant/departament': {
-      preLoaderRoute: typeof ServantDepartamentImport
-      parentRoute: typeof ServantImport
+    '/_departament/departament': {
+      preLoaderRoute: typeof DepartamentDepartamentImport
+      parentRoute: typeof DepartamentImport
     }
-    '/_servant/event': {
-      preLoaderRoute: typeof ServantEventImport
+    '/_departament/event-dep': {
+      preLoaderRoute: typeof DepartamentEventDepImport
+      parentRoute: typeof DepartamentImport
+    }
+    '/_rectory/departament-rec': {
+      preLoaderRoute: typeof RectoryDepartamentRecImport
+      parentRoute: typeof RectoryImport
+    }
+    '/_rectory/event-rec': {
+      preLoaderRoute: typeof RectoryEventRecImport
+      parentRoute: typeof RectoryImport
+    }
+    '/_rectory/rectory': {
+      preLoaderRoute: typeof RectoryRectoryImport
+      parentRoute: typeof RectoryImport
+    }
+    '/_servant/event-serv': {
+      preLoaderRoute: typeof ServantEventServImport
       parentRoute: typeof ServantImport
     }
     '/_servant/expense': {
@@ -104,8 +177,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServantServantImport
       parentRoute: typeof ServantImport
     }
-    '/_servant/details/$eventId': {
-      preLoaderRoute: typeof ServantDetailsEventIdImport
+    '/_departament/details-dep/$eventId': {
+      preLoaderRoute: typeof DepartamentDetailsDepEventIdImport
+      parentRoute: typeof DepartamentImport
+    }
+    '/_rectory/details-rec/$eventId': {
+      preLoaderRoute: typeof RectoryDetailsRecEventIdImport
+      parentRoute: typeof RectoryImport
+    }
+    '/_servant/details-serv/$eventId': {
+      preLoaderRoute: typeof ServantDetailsServEventIdImport
       parentRoute: typeof ServantImport
     }
   }
@@ -115,12 +196,22 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
+  DepartamentRoute.addChildren([
+    DepartamentDepartamentRoute,
+    DepartamentEventDepRoute,
+    DepartamentDetailsDepEventIdRoute,
+  ]),
+  RectoryRoute.addChildren([
+    RectoryDepartamentRecRoute,
+    RectoryEventRecRoute,
+    RectoryRectoryRoute,
+    RectoryDetailsRecEventIdRoute,
+  ]),
   ServantRoute.addChildren([
-    ServantDepartamentRoute,
-    ServantEventRoute,
+    ServantEventServRoute,
     ServantExpenseRoute,
     ServantServantRoute,
-    ServantDetailsEventIdRoute,
+    ServantDetailsServEventIdRoute,
   ]),
   ModuleRoute,
   RegisterRoute,

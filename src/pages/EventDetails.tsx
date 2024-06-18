@@ -1,9 +1,9 @@
-import { Event } from '@/models/event'
+import { Event, EventStatus } from '@/models/event'
 import { Expense } from '@/models/expense'
 import { getEvent } from '@/services/eventService'
 import { getExpenses } from '@/services/expenseService'
 import { Input, Textarea } from '@nextui-org/input'
-import { Accordion, AccordionItem, Button } from '@nextui-org/react'
+import { Accordion, AccordionItem, Button, Tooltip } from '@nextui-org/react'
 import {
     Table,
     TableBody,
@@ -12,18 +12,25 @@ import {
     TableHeader,
     TableRow,
 } from '@nextui-org/table'
-import { Link, useParams } from '@tanstack/react-router'
+import { Link, useNavigate, useParams } from '@tanstack/react-router'
 import { AxiosError, AxiosResponse } from 'axios'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
 import { dowloadDocuments } from '@/services/documentService'
-import { User } from '@/models/user'
+import { Role, User } from '@/models/user'
+import { ProcedureModal } from '@/components/ProcedureModal'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/store'
+import { ContributionModal } from '@/components/ContributionModal'
+import { ConfirmModal } from '@/components/ConfirmModal'
 
 export const EventDetails = () => {
     const { eventId } = useParams({ strict: false })
     const [event, setEvent] = useState<Event | null>(null)
     const [expenses, setExpenses] = useState<Expense[]>([])
+    const navigate = useNavigate()
+    const user = useSelector((state: RootState) => state.user.user)
     const columnsDocument = [
         { key: 'name', label: 'Nome' },
         { key: 'type', label: 'Tipo' },
@@ -33,6 +40,7 @@ export const EventDetails = () => {
         { key: 'name', label: 'Nome' },
         { key: 'type', label: 'Tipo' },
         { key: 'value', label: 'Valor' },
+        { key: 'justification', label: 'Justificativa' },
     ]
     const columnsProcedures = [
         { key: 'origin', label: 'Origem' },
@@ -70,6 +78,27 @@ export const EventDetails = () => {
             case 'type':
                 return eventExpense.expense.type
                 break
+            case 'justification':
+                return (
+                    <Tooltip
+                        placement='right-end'
+                        classNames={{
+                            base: ['text-secondary dark:text-dark-secondary'],
+                            content: [
+                                'border border-tertiary dark:border-dark-tertiary bg-background dark:bg-dark-background',
+                            ],
+                        }}
+                        content={eventExpense.justification}
+                    >
+                        <Button
+                            size='sm'
+                            className='bg-primary font-semibold text-background dark:bg-dark-primary dark:text-dark-background'
+                        >
+                            Justificativa
+                        </Button>
+                    </Tooltip>
+                )
+                break
             default:
                 return cellValue
                 break
@@ -94,6 +123,18 @@ export const EventDetails = () => {
                 break
         }
     }, [])
+
+    const contributionDep = useMemo(() => {
+        if (event?.contributionDep) {
+            return formatToBRL(event.contributionDep)
+        }
+    }, [event])
+
+    const contributionReit = useMemo(() => {
+        if (event?.contributionReit) {
+            return formatToBRL(event.contributionReit)
+        }
+    }, [event])
 
     const documents = useMemo(() => {
         if (event && event.procedures.length > 0) {
@@ -244,14 +285,34 @@ export const EventDetails = () => {
         <div className='flex flex-col items-center justify-center lg:ms-24'>
             <div className='mb-5 mt-24 flex h-auto w-full flex-col space-y-8 rounded-md border border-tertiary bg-background px-2 py-4 dark:border-dark-tertiary dark:bg-dark-background lg:mt-14 lg:w-2/3'>
                 <div className='flex'>
-                    <Link to='/event'>
-                        <Button
-                            size='md'
-                            className='bg-secondary font-semibold text-background dark:bg-dark-secondary dark:text-dark-background'
-                        >
-                            Voltar
-                        </Button>
-                    </Link>
+                    {user?.role === Role.PRO_REITOR ? (
+                        <Link to={'/event-rec'}>
+                            <Button
+                                size='md'
+                                className='bg-secondary font-semibold text-background dark:bg-dark-secondary dark:text-dark-background'
+                            >
+                                Voltar
+                            </Button>
+                        </Link>
+                    ) : user?.role === Role.CHEFE_DEPARTAMENTO ? (
+                        <Link to={'/event-dep'}>
+                            <Button
+                                size='md'
+                                className='bg-secondary font-semibold text-background dark:bg-dark-secondary dark:text-dark-background'
+                            >
+                                Voltar
+                            </Button>
+                        </Link>
+                    ) : (
+                        <Link to={'/event-serv'}>
+                            <Button
+                                size='md'
+                                className='bg-secondary font-semibold text-background dark:bg-dark-secondary dark:text-dark-background'
+                            >
+                                Voltar
+                            </Button>
+                        </Link>
+                    )}
                 </div>
                 <div className='flex'>
                     <Accordion
@@ -817,21 +878,81 @@ export const EventDetails = () => {
                                         </TableBody>
                                     </Table>
                                 </div>
+                                <div className='ms-4 flex min-h-20 w-1/2 flex-col items-center justify-center space-y-4  bg-transparent p-2  lg:w-1/4'>
+                                    <Input
+                                        isReadOnly
+                                        label='Aporte Departamento'
+                                        size='sm'
+                                        variant='bordered'
+                                        radius='md'
+                                        value={
+                                            contributionDep
+                                                ? contributionDep
+                                                : '--'
+                                        }
+                                        classNames={{
+                                            input: ['bg-transparent'],
+                                            label: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                            inputWrapper: [
+                                                'text-secondary dark:text-dark-secondary hover:text-primary dark:hover:text-dark-primary bg-transparent border border-tertiary dark:border-dark-tertiary hover:border-primary dark:hover:border-dark-primary',
+                                            ],
+                                            description: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                            errorMessage: ['text-error'],
+                                        }}
+                                    />
+                                    <Input
+                                        isReadOnly
+                                        label='Aporte Reitoria'
+                                        size='sm'
+                                        variant='bordered'
+                                        radius='md'
+                                        value={
+                                            contributionReit
+                                                ? contributionReit
+                                                : '--'
+                                        }
+                                        classNames={{
+                                            input: ['bg-transparent'],
+                                            label: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                            inputWrapper: [
+                                                'text-secondary dark:text-dark-secondary hover:text-primary dark:hover:text-dark-primary bg-transparent border border-tertiary dark:border-dark-tertiary hover:border-primary dark:hover:border-dark-primary',
+                                            ],
+                                            description: [
+                                                'text-secondary dark:text-dark-secondary',
+                                            ],
+                                            errorMessage: ['text-error'],
+                                        }}
+                                    />
+                                </div>
                             </div>
                         </AccordionItem>
                     </Accordion>
                 </div>
-                <div className='flex w-full justify-end'>
-                    <Button
-                        onClick={}
-                        type='button'
-                        size='lg'
-                        radius='md'
-                        className='w-56 me-4 bg-primary dark:bg-dark-primary font-semibold text-background dark:text-dark-background'
-                    >
-                        Tramitar
-                    </Button>
-                </div>
+                {event && user && user.role !== Role.SERVIDOR && (
+                    <div className='flex w-full justify-end'>
+                        <ConfirmModal
+                            userId={user.id}
+                            eventId={event.id}
+                            status={EventStatus.ACEITO}
+                        />
+                        <ConfirmModal
+                            userId={user.id}
+                            eventId={event.id}
+                            status={EventStatus.RECUSADO}
+                        />
+                        <ContributionModal
+                            eventId={event.id}
+                            userId={user.id}
+                        />
+                        <ProcedureModal originId={user.id} eventId={event.id} />
+                    </div>
+                )}
             </div>
         </div>
     )

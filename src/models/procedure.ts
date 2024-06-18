@@ -8,3 +8,9 @@ export interface Procedure {
     destiny: User
     documents: Document[]
 }
+
+export interface ProcedureDTO {
+    originId: number | null,
+    destinyId: number | null,
+    eventId: number | null
+}

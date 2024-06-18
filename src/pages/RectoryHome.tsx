@@ -1,8 +1,8 @@
 import { Link } from '@tanstack/react-router'
-import { BookMarked, Component, HandCoins } from 'lucide-react'
+import { BookMarked, Component } from 'lucide-react'
 import { motion } from 'framer-motion'
 
-export function ServantHome() {
+export function RectoryHome() {
     return (
         <main className='flex h-full w-full flex-col items-center justify-center lg:space-y-44'>
             <div className='mb-10 hidden h-auto w-full justify-center border-b border-tertiary p-2 text-lg font-semibold text-secondary dark:border-dark-tertiary dark:text-dark-secondary lg:flex'>
@@ -12,7 +12,7 @@ export function ServantHome() {
                 Seja Bem Vindo!
             </div>
             <div className='flex flex-col space-y-8 md:flex-row md:space-x-10 md:space-y-0'>
-                <Link from='/servant' to='/event-serv'>
+                <Link from='/rectory' to='/event-rec'>
                     <motion.div
                         whileHover={{ scale: 1.08, y: -10 }}
                         whileTap={{ scale: 0.95 }}
@@ -24,19 +24,7 @@ export function ServantHome() {
                         <span>Eventos</span>
                     </motion.div>
                 </Link>
-                <Link from='/servant' to='/expense'>
-                    <motion.div
-                        whileHover={{ scale: 1.08, y: -10 }}
-                        whileTap={{ scale: 0.95 }}
-                        className='flex min-h-56 w-56 flex-col items-center justify-center space-y-4 
-                                    rounded-md border border-tertiary px-2 py-4 text-lg font-semibold text-secondary 
-                                    shadow-lg hover:text-primary dark:border-dark-tertiary dark:text-dark-secondary dark:hover:text-dark-primary'
-                    >
-                        <HandCoins className='h-10 w-10' />
-                        <span>Despesas</span>
-                    </motion.div>
-                </Link>
-                <Link from='/servant' to='/departament'>
+                <Link from='/rectory' to='/departament-rec'>
                     <motion.div
                         whileHover={{ scale: 1.08, y: -10 }}
                         whileTap={{ scale: 0.95 }}

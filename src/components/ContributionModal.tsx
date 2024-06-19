@@ -35,6 +35,7 @@ export const ContributionModal: React.FC<Props> = ({ userId, eventId }) => {
                         'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
                     duration: 3000,
                 })
+                window.location.reload()
             })
             .catch((err: AxiosError) => {
                 toast.error(

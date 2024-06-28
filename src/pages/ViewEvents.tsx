@@ -221,10 +221,8 @@ export function ViewEvents() {
     }, [user, filter])
 
     useEffect(() => {
-        if (events.length === 0) {
-            handleEvents()
-        }
-    }, [events, events.length, handleEvents])
+        handleEvents()
+    }, [handleEvents])
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -596,7 +594,7 @@ export function ViewEvents() {
                 </ModalContent>
             </Modal>
 
-            <div className='flex w-full flex-col items-center lg:w-2/3 mt-5  lg:mt-8'>
+            <div className='mt-5 flex w-full flex-col items-center lg:mt-8  lg:w-2/3'>
                 <div className='flex h-auto w-full flex-col items-center  space-y-3 rounded-md border border-tertiary px-2 py-4 shadow-lg dark:border-dark-tertiary md:w-3/5 lg:w-[450px]'>
                     <Input
                         label='Pesquisar'

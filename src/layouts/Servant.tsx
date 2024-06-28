@@ -104,7 +104,7 @@ export function Servant() {
                             Eventos
                         </div>
                     </Link>
-                    <Link to='/expenses'>
+                    <Link to='/expense'>
                         <div className='text-md itens-center flex h-auto w-auto rounded-md bg-transparent p-1 font-semibold text-secondary hover:bg-tertiary hover:bg-opacity-5 hover:text-primary dark:text-dark-secondary dark:hover:bg-dark-tertiary dark:hover:text-dark-primary'>
                             <HandCoins className='me-3 h-6 w-6' />
                             Despesas

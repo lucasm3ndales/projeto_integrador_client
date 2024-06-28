@@ -21,18 +21,22 @@ export interface EventExpense {
     updatedAt: EpochTimeStamp
 }
 
+export interface ExpenseDTO {
+    name: string,
+    type: ExpenseType
+}
+
 export enum ExpenseType {
     OUTROS = 'OUTROS',
     TRANSPORTE = 'TRANSPORTE',
     ALIMENTACAO = 'ALIMENTACAO',
     HOSPEDAGEM = 'HOSPEDAGEM',
-    IGRESSOS = 'IGRESSOS'
+    INGRESSOS = 'IGRESSOS'
 }
 
 export interface ExpenseFilter {
     page?: number,
     size?: number,
     sort?: string,
-    name?: string,
-    type?: string
+    search?: string,
 }

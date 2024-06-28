@@ -8,17 +8,15 @@ import { Provider } from 'react-redux'
 import { store } from './store/index'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-        <NextUIProvider>
-            <NextThemesProvider
-                attribute='class'
-                defaultTheme='light'
-                themes={['light', 'dark']}
-            >
-                <Provider store={store}>
-                    <App />
-                </Provider>
-            </NextThemesProvider>
-        </NextUIProvider>
-    </React.StrictMode>,
+    <NextUIProvider>
+        <NextThemesProvider
+            attribute='class'
+            defaultTheme='light'
+            themes={['light', 'dark']}
+        >
+            <Provider store={store}>
+                <App />
+            </Provider>
+        </NextThemesProvider>
+    </NextUIProvider>,
 )

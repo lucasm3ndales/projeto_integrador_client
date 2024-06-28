@@ -325,6 +325,9 @@ export const EventDetails = () => {
                             </Button>
                         </Link>
                     )}
+                    <div className='flex justify-center text-secondary dark:text-dark-secondary font-bold text-2xl'>
+                        {event?.name}
+                    </div>
                     <div className='me-4 ms-1 h-auto w-auto text-xl font-semibold text-secondary dark:text-dark-secondary'>
                         Status:{' '}
                         {event &&

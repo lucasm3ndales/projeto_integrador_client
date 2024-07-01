@@ -20,6 +20,7 @@ import { Route as IndexImport } from './routes/index'
 import { Route as ServantServantImport } from './routes/_servant/servant'
 import { Route as ServantExpenseImport } from './routes/_servant/expense'
 import { Route as ServantEventServImport } from './routes/_servant/event-serv'
+import { Route as ServantDepartamentServantImport } from './routes/_servant/departament-servant'
 import { Route as RectoryRectoryImport } from './routes/_rectory/rectory'
 import { Route as RectoryEventRecImport } from './routes/_rectory/event-rec'
 import { Route as RectoryDepartamentRecImport } from './routes/_rectory/departament-rec'
@@ -73,6 +74,11 @@ const ServantExpenseRoute = ServantExpenseImport.update({
 
 const ServantEventServRoute = ServantEventServImport.update({
   path: '/event-serv',
+  getParentRoute: () => ServantRoute,
+} as any)
+
+const ServantDepartamentServantRoute = ServantDepartamentServantImport.update({
+  path: '/departament-servant',
   getParentRoute: () => ServantRoute,
 } as any)
 
@@ -165,6 +171,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RectoryRectoryImport
       parentRoute: typeof RectoryImport
     }
+    '/_servant/departament-servant': {
+      preLoaderRoute: typeof ServantDepartamentServantImport
+      parentRoute: typeof ServantImport
+    }
     '/_servant/event-serv': {
       preLoaderRoute: typeof ServantEventServImport
       parentRoute: typeof ServantImport
@@ -208,6 +218,7 @@ export const routeTree = rootRoute.addChildren([
     RectoryDetailsRecEventIdRoute,
   ]),
   ServantRoute.addChildren([
+    ServantDepartamentServantRoute,
     ServantEventServRoute,
     ServantExpenseRoute,
     ServantServantRoute,

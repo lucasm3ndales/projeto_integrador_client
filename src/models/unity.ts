@@ -1,8 +1,11 @@
 import { UnityManager } from './unityManager'
 
 export interface UnityFilter {
-    name?: string
-    type: string
+    page?: number,
+    sort?: string,
+    size?: number,
+    type: UnityType
+    search?: string
 }
 
 export enum UnityType {

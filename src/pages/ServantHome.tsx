@@ -36,7 +36,7 @@ export function ServantHome() {
                         <span>Despesas</span>
                     </motion.div>
                 </Link>
-                <Link from='/servant' to='/departament'>
+                <Link from='/servant' to='/departament-servant'>
                     <motion.div
                         whileHover={{ scale: 1.08, y: -10 }}
                         whileTap={{ scale: 0.95 }}

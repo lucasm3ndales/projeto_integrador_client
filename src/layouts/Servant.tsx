@@ -110,7 +110,7 @@ export function Servant() {
                             Despesas
                         </div>
                     </Link>
-                    <Link to='/departament'>
+                    <Link to='/departament-servant'>
                         <div className='text-md itens-center flex h-auto w-auto rounded-md bg-transparent p-1 font-semibold text-secondary hover:bg-tertiary hover:bg-opacity-5 hover:text-primary dark:text-dark-secondary dark:hover:bg-dark-tertiary dark:hover:text-dark-primary'>
                             <Component className='me-3 h-6 w-6' />
                             Departamentos
@@ -195,7 +195,7 @@ export function Servant() {
                         </div>
                     </Tooltip>
                 </Link>
-                <Link to='/departament'>
+                <Link to='/departament-servant'>
                     <Tooltip
                         content='Departamentos'
                         placement='right-end'

@@ -8,3 +8,10 @@ export interface UnityManager {
     user: User
     unity: Unity
 }
+
+export interface UnityManagerUserDto {
+    id: number
+    unityId: number,
+    userId: number,
+    manager: string,
+}

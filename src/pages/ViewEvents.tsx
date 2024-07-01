@@ -44,6 +44,7 @@ interface Pageable {
     size: number
     totalPages: number
 }
+
 //TODO: Arrumar Filtros
 export function ViewEvents() {
     const user = useSelector((state: RootState) => state.user.user)

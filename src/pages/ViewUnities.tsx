@@ -37,7 +37,7 @@ interface Item {
 }
 
 export const ViewUnities = () => {
-    const [unities, setExpenses] = useState<Unity[]>([])
+    const [unities, setUnities] = useState<Unity[]>([])
     const [managers, setManagers] = useState<UnityManagerUserDto[]>([])
     const [items, setItems] = useState<Item[]>([])
     const [search, setSearch] = useState<string>('')
@@ -74,7 +74,7 @@ export const ViewUnities = () => {
         if (user?.role === Role.PRO_REITOR) {
             switch (columnKey) {
                 case 'update':
-                    return <DepartamentUpdateForm id={item.unityId}/>
+                    return <DepartamentUpdateForm id={item.unityId} />
                     break
                 case 'manager':
                     return item.manager
@@ -105,7 +105,8 @@ export const ViewUnities = () => {
     const handleUnity = useCallback(async () => {
         await getUnities(filter)
             .then((res: AxiosResponse<Unity[] | any>) => {
-                setExpenses(res.data.content)
+                //console.log(res.data.content)
+                setUnities(res.data.content)
                 setPageable({
                     size: res.data.size,
                     sort: res.data.sort,
@@ -127,24 +128,22 @@ export const ViewUnities = () => {
     }, [filter])
 
     const handleManagers = useCallback(async () => {
-        if (unities && unities.length > 0) {
-            const ids = unities.map(u => u.id as number)
-            await getUnityManagersByUnityIds(ids)
-                .then((res: AxiosResponse<UnityManagerUserDto[]>) => {
-                    setManagers(res.data)
-                })
-                .catch((err: AxiosError) => {
-                    toast.error(
-                        (err?.response?.data as string) ||
-                            'Responsáveis não encontrados!',
-                        {
-                            className:
-                                'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
-                            duration: 3000,
-                        },
-                    )
-                })
-        }
+        const ids = unities.map(u => u.id as number)
+        await getUnityManagersByUnityIds(ids)
+            .then((res: AxiosResponse<UnityManagerUserDto[]>) => {
+                setManagers(res.data)
+            })
+            .catch((err: AxiosError) => {
+                toast.error(
+                    (err?.response?.data as string) ||
+                        'Responsáveis não encontrados!',
+                    {
+                        className:
+                            'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                        duration: 3000,
+                    },
+                )
+            })
     }, [unities])
 
     useEffect(() => {
@@ -152,32 +151,36 @@ export const ViewUnities = () => {
     }, [handleUnity])
 
     useEffect(() => {
-        handleManagers()
+        if (unities && unities.length > 0) {
+            handleManagers()
+        }
     }, [handleManagers, unities])
 
     useEffect(() => {
-        if (unities.length > 0 && managers.length > 0) {
-            unities.map(i => {
-                const res = managers.find(j => j.unityId === i.id)
+        if(unities && managers && unities.length > 0 && managers.length > 0) {
+            let list: Item[] = []
 
-                if (res) {
-                    const isExist = items.find(i => i.unityId === res.unityId)
+            list = unities.map(u => {
+                const m = managers.find(m => m.unityId === u.id)
 
-                    if (!isExist) {
-                        const newItem: Item = {
-                            userId: res?.unityId as number,
-                            manager: res?.manager as string,
-                            unity: i.name,
-                            type: i.type as UnityType,
-                            unityId: i.id as number,
-                        }
-
-                        setItems(i => [...i, newItem])
+                if(m) {
+                    const item: Item = {
+                        unity: u.name,
+                        manager: m?.manager,
+                        unityId: u.id as number,
+                        userId: m?.userId,
+                        type: u.type as UnityType,
                     }
+                    return item
                 }
             })
+            if(list.length > 0) {
+                setItems(list)
+            } else {
+                setItems([])
+            }
         }
-    }, [unities, managers, items])
+    }, [unities, managers])
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -259,7 +262,7 @@ export const ViewUnities = () => {
                         </TableHeader>
                         <TableBody
                             items={items}
-                            emptyContent={'Nenhuma Despesa Encontrada!'}
+                            emptyContent={'Nenhum Departamento Encontrado!'}
                         >
                             {item => (
                                 <TableRow key={item.unityId}>

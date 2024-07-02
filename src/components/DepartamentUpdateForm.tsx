@@ -1,5 +1,9 @@
-import { ExpenseDTO, ExpenseType } from '@/models/expense'
-import { saveExpense } from '@/services/expenseService'
+import { Unity, UnityUpdateDto } from '@/models/unity'
+import { UnityManagerUserDto } from '@/models/unityManager'
+import { User } from '@/models/user'
+import { getUnityManagersByUnityIds } from '@/services/managerService'
+import { getUnity, updateUnity } from '@/services/unityService'
+import { getUsers } from '@/services/userService'
 import { Button } from '@nextui-org/button'
 import {
     Input,
@@ -13,19 +17,96 @@ import {
     useDisclosure,
 } from '@nextui-org/react'
 import { AxiosError, AxiosResponse } from 'axios'
+import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-export const ExpenseSaveForm = () => {
+interface Props {
+    id: number
+}
+
+export const DepartamentUpdateForm: React.FC<Props> = ({ id }) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
+    const [unity, setUnity] = useState<Unity>()
+    const [managers, setManagers] = useState<UnityManagerUserDto[]>([])
+    const [users, setUsers] = useState<User[]>([])
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<ExpenseDTO>()
+    } = useForm<UnityUpdateDto>()
 
-    const send = (dto: ExpenseDTO) => {
-        saveExpense(dto)
+    const handleUsers = useCallback(() => {
+        getUsers().then((res: AxiosResponse<User>) => {
+            setUsers(res.data.content)
+        }).catch((err:AxiosError) => {
+            toast.error(
+                (err?.response?.data as string) ||
+                    'Usuários não encontrados!',
+                {
+                    className:
+                        'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                    duration: 3000,
+                },
+            )
+        })
+    }, [])
+
+    const handleManagers = useCallback(async () => {
+        if (unity) {
+            const ids = Array.of(unity.id)
+            await getUnityManagersByUnityIds(ids as number[])
+                .then((res: AxiosResponse<UnityManagerUserDto[]>) => {
+                    setManagers(res.data)
+                })
+                .catch((err: AxiosError) => {
+                    toast.error(
+                        (err?.response?.data as string) ||
+                            'Responsáveis não encontrados!',
+                        {
+                            className:
+                                'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                            duration: 3000,
+                        },
+                    )
+                })
+        }
+    }, [unity])
+
+    const handleUnity = useCallback(() => {
+        if(isOpen && id) {
+            getUnity(id).then((res: AxiosResponse<Unity>) => {
+                setUnity(res.data)
+            }).catch((err:AxiosError) => {
+                toast.error(
+                    (err?.response?.data as string) ||
+                        'Unidade não encontrada!',
+                    {
+                        className:
+                            'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                        duration: 3000,
+                    },
+                )
+            })
+        }
+    }, [isOpen, id])
+
+    useEffect(() => {
+        if(isOpen && id) {
+            handleUsers()
+            handleUnity()
+        }
+    }, [isOpen, id, handleUsers, handleUnity])
+
+    useEffect(() => {
+        if(isOpen && unity) {
+            handleManagers()
+        }
+    }, [unity, isOpen, handleManagers])
+
+    const send = (dto: UnityUpdateDto) => {
+        console.log(dto)
+        updateUnity(dto)
             .then((res: AxiosResponse) => {
                 toast.success(res.data as string, {
                     className:
@@ -37,7 +118,7 @@ export const ExpenseSaveForm = () => {
             .catch((err: AxiosError) => {
                 toast.error(
                     (err?.response?.data as string) ||
-                        'Erro ao cadastrar despesa!',
+                        'Erro ao cadastrar departamento!',
                     {
                         className:
                             'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
@@ -52,11 +133,11 @@ export const ExpenseSaveForm = () => {
             <Button
                 onPress={onOpen}
                 type='button'
-                size='lg'
+                size='md'
                 radius='md'
-                className='w-full bg-success font-semibold text-background'
+                className='w-full bg-primary dark:bg-dark-primary font-semibold text-background dark:text-dark-background'
             >
-                Nova Despesa
+                Alterar
             </Button>
             <Modal
                 isOpen={isOpen}
@@ -79,16 +160,18 @@ export const ExpenseSaveForm = () => {
                         <>
                             <form method='post' onSubmit={handleSubmit(send)}>
                                 <ModalHeader className='flex flex-col gap-1'>
-                                    <div>Cadastrar Nova Despesa</div>
+                                    <div>Alterar Departamento</div>
                                     <div className='text-sm font-semibold text-primary dark:text-dark-primary'>Campos Obrigatórios*</div>
                                 </ModalHeader>
                                 <ModalBody className='items-center'>
                                     <div className='w-72'>
                                         <Input
-                                            label='Nome da Despesa*'
+                                            label='Nome do Departamento*'
                                             size='sm'
                                             variant='bordered'
                                             radius='md'
+                                            placeholder={unity?.name}
+                                            defaultValue={unity?.name}
                                             isInvalid={
                                                 errors?.name && 'Input-error'
                                                     ? true
@@ -118,16 +201,17 @@ export const ExpenseSaveForm = () => {
                                     </div>
                                     <div className='w-72 '>
                                         <Select
-                                            label='Tipo da Despesa*'
+                                            label='Responsável (Chefe de Departamento)*'
                                             variant='bordered'
                                             size='sm'
                                             radius='md'
                                             className='max-w-xs'
-                                            {...register('type', {
+                                            placeholder={managers.length > 0 ? managers[0].manager : '--'}
+                                            {...register('idUser', {
                                                 required: {
                                                     value: true,
                                                     message:
-                                                        'Tipo obrigatório!',
+                                                        'Chefe de Departamento obrigatório!',
                                                 },
                                             })}
                                             classNames={{
@@ -157,13 +241,13 @@ export const ExpenseSaveForm = () => {
                                                 },
                                             }}
                                         >
-                                            {Object.values(ExpenseType).map(
-                                                t => (
+                                            {users.map(
+                                                u => (
                                                     <SelectItem
-                                                        key={t}
-                                                        value={t}
+                                                        key={u.id}
+                                                        value={u.id}
                                                     >
-                                                        {t.toString()}
+                                                        {`${u.name} - ${u.siape}`}
                                                     </SelectItem>
                                                 ),
                                             )}
@@ -191,7 +275,7 @@ export const ExpenseSaveForm = () => {
                                         }}
                                         className='w-2/3 bg-success font-semibold text-background'
                                     >
-                                        Salvar
+                                        Alterar
                                     </Button>
                                 </ModalFooter>
                             </form>

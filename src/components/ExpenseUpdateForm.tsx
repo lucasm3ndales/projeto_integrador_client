@@ -162,7 +162,7 @@ export const ExpenseUpdateForm: React.FC<Props> = ({ id }) => {
                                                 required: {
                                                     value: true,
                                                     message:
-                                                        'Periodicidade obrigatória!',
+                                                        'Tipo obrigatório!',
                                                 },
                                             })}
                                             classNames={{

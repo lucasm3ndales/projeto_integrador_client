@@ -1,5 +1,7 @@
-import { ExpenseDTO, ExpenseType } from '@/models/expense'
-import { saveExpense } from '@/services/expenseService'
+import { UnitySaveDTO, UnityType } from '@/models/unity'
+import { User } from '@/models/user'
+import { saveUnity } from '@/services/unityService'
+import { getUsers } from '@/services/userService'
 import { Button } from '@nextui-org/button'
 import {
     Input,
@@ -13,19 +15,49 @@ import {
     useDisclosure,
 } from '@nextui-org/react'
 import { AxiosError, AxiosResponse } from 'axios'
+import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-export const ExpenseSaveForm = () => {
+export const DepartamentSaveForm = () => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
+    const [users, setUsers] = useState<User[]>([])
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<ExpenseDTO>()
+    } = useForm<UnitySaveDTO>({
+        defaultValues: {
+            type: UnityType.DEPARTAMENTO,
+            name: '',
+            idUser: null,
+        },
+    })
 
-    const send = (dto: ExpenseDTO) => {
-        saveExpense(dto)
+    const handleUsers = useCallback(() => {
+        getUsers().then((res: AxiosResponse<User>) => {
+            setUsers(res.data.content)
+        }).catch((err:AxiosError) => {
+            toast.error(
+                (err?.response?.data as string) ||
+                    'Usuários não encontrados!',
+                {
+                    className:
+                        'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                    duration: 3000,
+                },
+            )
+        })
+    }, [])
+
+    useEffect(() => {
+        if(isOpen) {
+            handleUsers()
+        }
+    }, [isOpen, handleUsers])
+
+    const send = (dto: UnitySaveDTO) => {
+        saveUnity(dto)
             .then((res: AxiosResponse) => {
                 toast.success(res.data as string, {
                     className:
@@ -37,7 +69,7 @@ export const ExpenseSaveForm = () => {
             .catch((err: AxiosError) => {
                 toast.error(
                     (err?.response?.data as string) ||
-                        'Erro ao cadastrar despesa!',
+                        'Erro ao cadastrar departamento!',
                     {
                         className:
                             'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
@@ -56,7 +88,7 @@ export const ExpenseSaveForm = () => {
                 radius='md'
                 className='w-full bg-success font-semibold text-background'
             >
-                Nova Despesa
+                Novo Departamento
             </Button>
             <Modal
                 isOpen={isOpen}
@@ -79,13 +111,13 @@ export const ExpenseSaveForm = () => {
                         <>
                             <form method='post' onSubmit={handleSubmit(send)}>
                                 <ModalHeader className='flex flex-col gap-1'>
-                                    <div>Cadastrar Nova Despesa</div>
+                                    <div>Cadastrar Novo Departamento</div>
                                     <div className='text-sm font-semibold text-primary dark:text-dark-primary'>Campos Obrigatórios*</div>
                                 </ModalHeader>
                                 <ModalBody className='items-center'>
                                     <div className='w-72'>
                                         <Input
-                                            label='Nome da Despesa*'
+                                            label='Nome do Departamento*'
                                             size='sm'
                                             variant='bordered'
                                             radius='md'
@@ -118,16 +150,16 @@ export const ExpenseSaveForm = () => {
                                     </div>
                                     <div className='w-72 '>
                                         <Select
-                                            label='Tipo da Despesa*'
+                                            label='Responsável (Chefe de Departamento)*'
                                             variant='bordered'
                                             size='sm'
                                             radius='md'
                                             className='max-w-xs'
-                                            {...register('type', {
+                                            {...register('idUser', {
                                                 required: {
                                                     value: true,
                                                     message:
-                                                        'Tipo obrigatório!',
+                                                        'Chefe de Departamento obrigatório!',
                                                 },
                                             })}
                                             classNames={{
@@ -157,13 +189,13 @@ export const ExpenseSaveForm = () => {
                                                 },
                                             }}
                                         >
-                                            {Object.values(ExpenseType).map(
-                                                t => (
+                                            {users.map(
+                                                u => (
                                                     <SelectItem
-                                                        key={t}
-                                                        value={t}
+                                                        key={u.id}
+                                                        value={u.id}
                                                     >
-                                                        {t.toString()}
+                                                        {`${u.name} - ${u.siape}`}
                                                     </SelectItem>
                                                 ),
                                             )}

@@ -20,7 +20,14 @@ export interface Unity {
     unityManagers: UnityManager[]
 }
 
-export interface UnityDTO {
+export interface UnityUpdateDto {
+    idUnity: number | null,
+    idUser: number | null,
     name: string
-    type: string | UnityType
+}
+
+export interface UnitySaveDTO {
+    idUser:  number | null,
+    name: string
+    type: UnityType
 }

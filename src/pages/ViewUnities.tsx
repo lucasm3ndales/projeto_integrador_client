@@ -1,7 +1,11 @@
+import { DepartamentSaveForm } from '@/components/DepartamentSaveForm'
+import { DepartamentUpdateForm } from '@/components/DepartamentUpdateForm'
 import { Unity, UnityFilter, UnityType } from '@/models/unity'
 import { UnityManagerUserDto } from '@/models/unityManager'
+import { Role } from '@/models/user'
 import { getUnityManagersByUnityIds } from '@/services/managerService'
 import { getUnities } from '@/services/unityService'
+import { RootState } from '@/store'
 import {
     Input,
     Table,
@@ -14,6 +18,7 @@ import {
 } from '@nextui-org/react'
 import { AxiosError, AxiosResponse } from 'axios'
 import { useCallback, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { toast } from 'sonner'
 
 interface Pageable {
@@ -24,10 +29,10 @@ interface Pageable {
 }
 
 interface Item {
-    unity: string,
-    type: UnityType,
-    manager: string,
-    unityId: number,
+    unity: string
+    type: UnityType
+    manager: string
+    unityId: number
     userId: number
 }
 
@@ -36,6 +41,7 @@ export const ViewUnities = () => {
     const [managers, setManagers] = useState<UnityManagerUserDto[]>([])
     const [items, setItems] = useState<Item[]>([])
     const [search, setSearch] = useState<string>('')
+    const user = useSelector((state: RootState) => state.user.user)
     const [pageable, setPageable] = useState<Pageable>({
         page: 0,
         sort: '',
@@ -49,28 +55,51 @@ export const ViewUnities = () => {
         type: UnityType.DEPARTAMENTO,
         search: '',
     })
-    const columnExpenses = [
+    const columnUnities1 = [
         { key: 'name', label: 'NOME' },
         { key: 'type', label: 'TIPO' },
         { key: 'manager', label: 'RESPONSÁVEL' },
     ]
 
+    const columnUnities2 = [
+        { key: 'name', label: 'NOME' },
+        { key: 'type', label: 'TIPO' },
+        { key: 'manager', label: 'RESPONSÁVEL' },
+        { key: 'update', label: 'ALTERAR' },
+    ]
+
     const renderTableUnity = useCallback((item, columnKey) => {
         const cellValue = item[columnKey]
 
-        switch (columnKey) {
-            case 'manager':
-                return item.manager
-                break
-            case 'name':
-                return item.unity
-                break
-            default:
-                return cellValue
-                break
+        if (user?.role === Role.PRO_REITOR) {
+            switch (columnKey) {
+                case 'update':
+                    return <DepartamentUpdateForm id={item.unityId}/>
+                    break
+                case 'manager':
+                    return item.manager
+                    break
+                case 'name':
+                    return item.unity
+                    break
+                default:
+                    return cellValue
+                    break
+            }
+        } else {
+            switch (columnKey) {
+                case 'manager':
+                    return item.manager
+                    break
+                case 'name':
+                    return item.unity
+                    break
+                default:
+                    return cellValue
+                    break
+            }
         }
     }, [])
-
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const handleUnity = useCallback(async () => {
@@ -124,18 +153,17 @@ export const ViewUnities = () => {
 
     useEffect(() => {
         handleManagers()
-        
     }, [handleManagers, unities])
 
     useEffect(() => {
-        if(unities.length > 0 && managers.length > 0) {
+        if (unities.length > 0 && managers.length > 0) {
             unities.map(i => {
                 const res = managers.find(j => j.unityId === i.id)
-                
-                if(res) {
+
+                if (res) {
                     const isExist = items.find(i => i.unityId === res.unityId)
 
-                    if(!isExist) {
+                    if (!isExist) {
                         const newItem: Item = {
                             userId: res?.unityId as number,
                             manager: res?.manager as string,
@@ -143,12 +171,10 @@ export const ViewUnities = () => {
                             type: i.type as UnityType,
                             unityId: i.id as number,
                         }
-        
-                        setItems((i) => [...i, newItem])
+
+                        setItems(i => [...i, newItem])
                     }
-
                 }
-
             })
         }
     }, [unities, managers, items])
@@ -199,6 +225,9 @@ export const ViewUnities = () => {
                             errorMessage: ['text-error'],
                         }}
                     />
+                    {user && user?.role === Role.PRO_REITOR && (
+                        <DepartamentSaveForm />
+                    )}
                 </div>
                 <div className='mt-8 flex h-auto w-full flex-col items-center space-y-3 rounded-md border border-tertiary px-2 py-4 shadow-lg dark:border-dark-tertiary'>
                     <Table
@@ -215,7 +244,13 @@ export const ViewUnities = () => {
                             ],
                         }}
                     >
-                        <TableHeader columns={columnExpenses}>
+                        <TableHeader
+                            columns={
+                                user && user.role === Role.PRO_REITOR
+                                    ? columnUnities2
+                                    : columnUnities1
+                            }
+                        >
                             {column => (
                                 <TableColumn key={column.key}>
                                     {column.label}

@@ -207,7 +207,7 @@ export const EventDetails = () => {
 
     useEffect(() => {
         if (event && expenses.length === 0) {
-            getExpenses({})
+            getExpenses({search: ''})
                 .then((res: AxiosResponse<Expense[]>) => {
                     setExpenses(res.data.content)
                 })

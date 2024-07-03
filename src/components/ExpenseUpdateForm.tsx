@@ -18,11 +18,13 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
 interface Props {
-    id: number
+    id: number,
+    setRender: (value: React.SetStateAction<boolean>) => void
+
 }
 
-export const ExpenseUpdateForm: React.FC<Props> = ({ id }) => {
-    const { isOpen, onOpen, onOpenChange } = useDisclosure()
+export const ExpenseUpdateForm: React.FC<Props> = ({ id, setRender }) => {
+    const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
     const [expense, setExpense] = useState<Expense>()
     const {
         register,
@@ -55,7 +57,14 @@ export const ExpenseUpdateForm: React.FC<Props> = ({ id }) => {
     }, [id, isOpen])
 
     const send = (dto: Expense) => {
-        console.log(dto)
+        if(!dto.name && expense?.name) {
+            dto.name = expense.name
+        }
+
+        if(!dto.type && expense?.type) {
+            dto.type = expense.type
+        }
+
         updateExpense(dto)
             .then((res: AxiosResponse) => {
                 toast.success(res.data as string, {
@@ -63,7 +72,8 @@ export const ExpenseUpdateForm: React.FC<Props> = ({ id }) => {
                         'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
                     duration: 3000,
                 })
-                window.location.reload()
+                onClose()
+                setRender(true)
             })
             .catch((err: AxiosError) => {
                 toast.error(
@@ -109,8 +119,8 @@ export const ExpenseUpdateForm: React.FC<Props> = ({ id }) => {
                     {onClose => (
                         <>
                             <form method='post' onSubmit={handleSubmit(send)}>
-                                <ModalHeader className='flex flex-col gap-1'>
-                                    <div>Alterar Despesa</div>
+                                <ModalHeader className='flex flex-col gap-1 capitalize'>
+                                    <div>Alterar Despesa: {expense?.name}</div>
                                     <div className='text-sm font-semibold text-primary dark:text-dark-primary'>
                                         Campos Obrigatórios*
                                     </div>
@@ -122,19 +132,8 @@ export const ExpenseUpdateForm: React.FC<Props> = ({ id }) => {
                                             size='sm'
                                             variant='bordered'
                                             radius='md'
-                                            placeholder={expense?.name ? expense.name : '--'}
-                                            isInvalid={
-                                                errors?.name && 'Input-error'
-                                                    ? true
-                                                    : false
-                                            }
-                                            {...register('name', {
-                                                required: {
-                                                    value: true,
-                                                    message:
-                                                        'Nome obrigatório!',
-                                                },
-                                            })}
+                                            placeholder={expense?.name}
+                                            {...register('name')}
                                             classNames={{
                                                 input: ['bg-transparent'],
                                                 label: [
@@ -156,15 +155,9 @@ export const ExpenseUpdateForm: React.FC<Props> = ({ id }) => {
                                             variant='bordered'
                                             size='sm'
                                             radius='md'
-                                            placeholder={expense?.type ? expense.type : '--'}
+                                            placeholder={expense?.type}
                                             className='max-w-xs'
-                                            {...register('type', {
-                                                required: {
-                                                    value: true,
-                                                    message:
-                                                        'Tipo obrigatório!',
-                                                },
-                                            })}
+                                            {...register('type')}
                                             classNames={{
                                                 label: 'text-secondary dark:text-dark-secondary',
                                                 trigger:
@@ -221,9 +214,6 @@ export const ExpenseUpdateForm: React.FC<Props> = ({ id }) => {
                                         type='submit'
                                         size='md'
                                         radius='md'
-                                        onPress={() => {
-                                            onClose()
-                                        }}
                                         className='w-2/3 bg-success font-semibold text-background'
                                     >
                                         Alterar

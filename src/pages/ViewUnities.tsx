@@ -157,13 +157,13 @@ export const ViewUnities = () => {
     }, [handleManagers, unities])
 
     useEffect(() => {
-        if(unities && managers && unities.length > 0 && managers.length > 0) {
+        if (unities && managers && unities.length > 0 && managers.length > 0) {
             let list: Item[] = []
 
             list = unities.map(u => {
                 const m = managers.find(m => m.unityId === u.id)
 
-                if(m) {
+                if (m) {
                     const item: Item = {
                         unity: u.name,
                         manager: m?.manager,
@@ -174,11 +174,13 @@ export const ViewUnities = () => {
                     return item
                 }
             })
-            if(list.length > 0) {
+            if (list.length > 0) {
                 setItems(list)
             } else {
                 setItems([])
             }
+        } else {
+            setItems([])
         }
     }, [unities, managers])
 

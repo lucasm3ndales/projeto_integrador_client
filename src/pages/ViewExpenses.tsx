@@ -26,6 +26,7 @@ interface Pageable {
 export const ViewExpenses = () => {
     const [expenses, setExpenses] = useState<Expense[]>([])
     const [search, setSearch] = useState<string>('')
+    const [render, setRender] = useState<boolean>(false)
     const [pageable, setPageable] = useState<Pageable>({
         page: 0,
         sort: '',
@@ -49,7 +50,7 @@ export const ViewExpenses = () => {
 
         switch (columnKey) {
             case 'update':
-                return <ExpenseUpdateForm id={expense.id}/>
+                return <ExpenseUpdateForm id={expense.id} setRender={setRender}/>
                 break
             default:
                 return cellValue
@@ -81,6 +82,13 @@ export const ViewExpenses = () => {
                 )
             })
     }, [filter])
+
+    useEffect(() => {
+        if(render) {
+            handleExpense()
+            setRender(false)
+        }
+    }, [render, handleExpense])
 
     useEffect(() => {
         handleExpense()
@@ -132,7 +140,7 @@ export const ViewExpenses = () => {
                             errorMessage: ['text-error'],
                         }}
                     />
-                    <ExpenseSaveForm />
+                    <ExpenseSaveForm setRender={setRender}/>
                 </div>
                 <div className='mt-8 flex h-auto w-full flex-col items-center space-y-3 rounded-md border border-tertiary px-2 py-4 shadow-lg dark:border-dark-tertiary'>
                     <Table

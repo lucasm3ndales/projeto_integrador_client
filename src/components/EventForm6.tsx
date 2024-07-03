@@ -16,7 +16,8 @@ import {
     TableRow,
 } from '@nextui-org/table'
 import { AxiosError, AxiosResponse } from 'axios'
-import { useEffect, useState } from 'react'
+import { format } from 'date-fns'
+import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
 
@@ -34,6 +35,30 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
     const [total, setTotal] = useState<string>('')
     const [expenses, setExpenses] = useState<Expense[]>([])
     const [unities, setUnities] = useState<Unity[]>([])
+
+    const startDate = useMemo(() => {
+        if(dto.startDate) {
+            return format(dto.startDate, 'dd/MM/yyyy')
+        }
+    }, [dto])
+
+    const endDate = useMemo(() => {
+        if(dto.endDate) {
+            return format(dto.endDate, 'dd/MM/yyyy')
+        }
+    }, [dto])
+
+    const departureDate = useMemo(() => {
+        if(dto.departureDate) {
+            return format(dto.departureDate, 'dd/MM/yyyy')
+        }
+    }, [dto])
+
+    const backDate = useMemo(() => {
+        if(dto.backDate) {
+            return format(dto.backDate, 'dd/MM/yyyy')
+        }
+    }, [dto])
 
     const columnsDocument = [
         { key: 'name', label: 'Nome' },
@@ -260,7 +285,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                value={dto.startDate}
+                                value={startDate}
                                 classNames={{
                                     input: ['bg-transparent'],
                                     label: [
@@ -283,7 +308,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                value={dto.endDate}
+                                value={endDate}
                                 classNames={{
                                     input: ['bg-transparent'],
                                     label: [
@@ -306,7 +331,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                value={dto.departureDate}
+                                value={departureDate}
                                 classNames={{
                                     input: ['bg-transparent'],
                                     label: [
@@ -329,7 +354,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
                                 size='sm'
                                 variant='bordered'
                                 radius='md'
-                                value={dto.backDate}
+                                value={backDate}
                                 classNames={{
                                     input: ['bg-transparent'],
                                     label: [

@@ -46,6 +46,7 @@ export function RegisterEvent() {
         <EventForm6 currentStep={currentStep} />,
     ]
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const updateDTO = useCallback(
         debounce(() => {
             const formValues = methods.getValues()

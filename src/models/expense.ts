@@ -31,7 +31,7 @@ export enum ExpenseType {
     TRANSPORTE = 'TRANSPORTE',
     ALIMENTACAO = 'ALIMENTACAO',
     HOSPEDAGEM = 'HOSPEDAGEM',
-    INGRESSOS = 'IGRESSOS'
+    INGRESSOS = 'INGRESSOS'
 }
 
 export interface ExpenseFilter {

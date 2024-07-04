@@ -15,12 +15,16 @@ import {
     useDisclosure,
 } from '@nextui-org/react'
 import { AxiosError, AxiosResponse } from 'axios'
-import { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-export const DepartamentSaveForm = () => {
-    const { isOpen, onOpen, onOpenChange } = useDisclosure()
+interface Props {
+    setRender: (value: React.SetStateAction<boolean>) => void
+}
+
+export const DepartamentSaveForm: React.FC<Props> = ({ setRender }) => {
+    const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
     const [users, setUsers] = useState<User[]>([])
     const {
         register,
@@ -64,7 +68,8 @@ export const DepartamentSaveForm = () => {
                         'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
                     duration: 3000,
                 })
-                window.location.reload()
+                setRender(true)
+                onClose()
             })
             .catch((err: AxiosError) => {
                 toast.error(
@@ -218,9 +223,6 @@ export const DepartamentSaveForm = () => {
                                         type='submit'
                                         size='md'
                                         radius='md'
-                                        onPress={() => {
-                                            onClose()
-                                        }}
                                         className='w-2/3 bg-success font-semibold text-background'
                                     >
                                         Salvar

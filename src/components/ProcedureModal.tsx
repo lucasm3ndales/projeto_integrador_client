@@ -24,6 +24,8 @@ interface Props {
     userRole: Role
     unityType: UnityType
     destiny?: User
+    setRender: (value: React.SetStateAction<boolean>) => void
+
 }
 
 export const ProcedureModal: React.FC<Props> = ({
@@ -32,6 +34,7 @@ export const ProcedureModal: React.FC<Props> = ({
     userRole,
     unityType,
     destiny,
+    setRender
 }) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
     const [unities, setUnities] = useState<Unity[]>([])
@@ -100,7 +103,7 @@ export const ProcedureModal: React.FC<Props> = ({
                         'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
                     duration: 3000,
                 })
-                //window.location.reload()
+                setRender(true)
             })
             .catch((err: AxiosError) => {
                 toast.error(

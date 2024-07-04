@@ -17,14 +17,15 @@ import { toast } from 'sonner'
 interface Props {
     userId: number
     eventId: number
+    setRender: (value: React.SetStateAction<boolean>) => void
 }
 
-export const ContributionModal: React.FC<Props> = ({ userId, eventId }) => {
+export const ContributionModal: React.FC<Props> = ({ userId, eventId, setRender }) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
     const [contributionDTO, setContributionDTO] = useState<ContributionDTO>({
         userId: userId,
         eventId: eventId,
-        contribution: 0.0,
+        contribution: 0.00,
     })
 
     const send = () => {
@@ -35,7 +36,7 @@ export const ContributionModal: React.FC<Props> = ({ userId, eventId }) => {
                         'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
                     duration: 3000,
                 })
-                window.location.reload()
+                setRender(true)
             })
             .catch((err: AxiosError) => {
                 toast.error(
@@ -91,11 +92,12 @@ export const ContributionModal: React.FC<Props> = ({ userId, eventId }) => {
                                         variant='bordered'
                                         radius='md'
                                         type='number'
+                                        min={0}
                                         value={contributionDTO.contribution as string}
                                         onChange={e =>
                                             setContributionDTO(state => ({
                                                 ...state,
-                                                contribution: e.target.value,
+                                                contribution: Number(e.target.value),
                                             }))
                                         }
                                         classNames={{

@@ -40,6 +40,7 @@ export const ViewUnities = () => {
     const [unities, setUnities] = useState<Unity[]>([])
     const [managers, setManagers] = useState<UnityManagerUserDto[]>([])
     const [items, setItems] = useState<Item[]>([])
+    const [render, setRender] = useState<boolean>(false)
     const [search, setSearch] = useState<string>('')
     const user = useSelector((state: RootState) => state.user.user)
     const [pageable, setPageable] = useState<Pageable>({
@@ -74,7 +75,7 @@ export const ViewUnities = () => {
         if (user?.role === Role.PRO_REITOR) {
             switch (columnKey) {
                 case 'update':
-                    return <DepartamentUpdateForm id={item.unityId} />
+                    return <DepartamentUpdateForm id={item.unityId} setRender={setRender} />
                     break
                 case 'manager':
                     return item.manager
@@ -145,6 +146,13 @@ export const ViewUnities = () => {
                 )
             })
     }, [unities])
+
+    useEffect(() => {
+        if(render) {
+            handleUnity()
+            setRender(false)
+        }
+    }, [render, handleUnity])
 
     useEffect(() => {
         handleUnity()
@@ -231,7 +239,7 @@ export const ViewUnities = () => {
                         }}
                     />
                     {user && user?.role === Role.PRO_REITOR && (
-                        <DepartamentSaveForm />
+                        <DepartamentSaveForm setRender={setRender}/>
                     )}
                 </div>
                 <div className='mt-8 flex h-auto w-full flex-col items-center space-y-3 rounded-md border border-tertiary px-2 py-4 shadow-lg dark:border-dark-tertiary'>

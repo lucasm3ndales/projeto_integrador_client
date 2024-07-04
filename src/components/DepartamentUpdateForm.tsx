@@ -22,11 +22,12 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
 interface Props {
-    id: number
+    id: number,
+    setRender: (value: React.SetStateAction<boolean>) => void
 }
 
-export const DepartamentUpdateForm: React.FC<Props> = ({ id }) => {
-    const { isOpen, onOpen, onOpenChange } = useDisclosure()
+export const DepartamentUpdateForm: React.FC<Props> = ({ id, setRender }) => {
+    const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
     const [unity, setUnity] = useState<Unity>()
     const [managers, setManagers] = useState<UnityManagerUserDto[]>([])
     const [users, setUsers] = useState<User[]>([])
@@ -34,7 +35,13 @@ export const DepartamentUpdateForm: React.FC<Props> = ({ id }) => {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<UnityUpdateDto>()
+    } = useForm<UnityUpdateDto>({
+        defaultValues: {
+            idUnity: id,
+            idUser: null,
+            name: '',
+        },
+    })
 
     const handleUsers = useCallback(() => {
         getUsers().then((res: AxiosResponse<User>) => {
@@ -105,7 +112,6 @@ export const DepartamentUpdateForm: React.FC<Props> = ({ id }) => {
     }, [unity, isOpen, handleManagers])
 
     const send = (dto: UnityUpdateDto) => {
-        console.log(dto)
         updateUnity(dto)
             .then((res: AxiosResponse) => {
                 toast.success(res.data as string, {
@@ -113,7 +119,8 @@ export const DepartamentUpdateForm: React.FC<Props> = ({ id }) => {
                         'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
                     duration: 3000,
                 })
-                window.location.reload()
+                onClose()
+                setRender(true)
             })
             .catch((err: AxiosError) => {
                 toast.error(
@@ -159,8 +166,8 @@ export const DepartamentUpdateForm: React.FC<Props> = ({ id }) => {
                     {onClose => (
                         <>
                             <form method='post' onSubmit={handleSubmit(send)}>
-                                <ModalHeader className='flex flex-col gap-1'>
-                                    <div>Alterar Departamento</div>
+                                <ModalHeader className='flex flex-col gap-1 capitalize'>
+                                    <div>Alterar Departamento: {unity?.name}</div>
                                     <div className='text-sm font-semibold text-primary dark:text-dark-primary'>Campos Obrigatórios*</div>
                                 </ModalHeader>
                                 <ModalBody className='items-center'>
@@ -213,6 +220,7 @@ export const DepartamentUpdateForm: React.FC<Props> = ({ id }) => {
                                                     message:
                                                         'Chefe de Departamento obrigatório!',
                                                 },
+                                                setValueAs: value => Number(value),
                                             })}
                                             classNames={{
                                                 label: 'text-secondary dark:text-dark-secondary',
@@ -270,9 +278,6 @@ export const DepartamentUpdateForm: React.FC<Props> = ({ id }) => {
                                         type='submit'
                                         size='md'
                                         radius='md'
-                                        onPress={() => {
-                                            onClose()
-                                        }}
                                         className='w-2/3 bg-success font-semibold text-background'
                                     >
                                         Alterar

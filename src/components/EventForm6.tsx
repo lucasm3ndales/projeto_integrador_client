@@ -116,7 +116,7 @@ export const EventForm6: React.FC<FormType> = ({ currentStep }) => {
             dto.eventExpenses.length > 0 &&
             currentStep === 5
         ) {
-            getExpenses({} as ExpenseFilter)
+            getExpenses({search: ''} as ExpenseFilter)
                 .then((res: AxiosResponse<Expense[]>) => {
                     setExpenses(res.data.content)
                 })

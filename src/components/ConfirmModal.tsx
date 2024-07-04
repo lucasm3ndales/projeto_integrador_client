@@ -17,12 +17,13 @@ interface Props {
     userId: number
     eventId: number
     status: EventStatus
+    setRender: (value: React.SetStateAction<boolean>) => void
 }
 
 const acceptStyle = 'me-4 w-56 bg-success font-semibold text-background'
 const declineStyle = 'me-4 w-56 bg-error font-semibold text-background'
 
-export const ConfirmModal: React.FC<Props> = ({ userId, eventId, status }) => {
+export const ConfirmModal: React.FC<Props> = ({ userId, eventId, status, setRender }) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
     const [statusDTO] = useState<EventStatusDTO>({
         userId: userId,
@@ -38,7 +39,7 @@ export const ConfirmModal: React.FC<Props> = ({ userId, eventId, status }) => {
                         'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
                     duration: 3000,
                 })
-                window.location.reload()
+                setRender(true)
             })
             .catch((err: AxiosError) => {
                 toast.error(

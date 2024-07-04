@@ -35,6 +35,7 @@ import { UnityType } from '@/models/unity'
 export const EventDetails = () => {
     const { eventId } = useParams({ strict: false })
     const [event, setEvent] = useState<Event | null>(null)
+    const [render, setRender] = useState<boolean>(false)
     const [expenses, setExpenses] = useState<Expense[]>([])
     const user = useSelector((state: RootState) => state.user.user)
     const columnsDocument = [
@@ -186,6 +187,27 @@ export const EventDetails = () => {
     }, [event])
 
     useEffect(() => {
+        if (render) {
+            getEvent(eventId)
+                .then((res: AxiosResponse<Event>) => {
+                    setEvent(res.data)
+                })
+                .catch((err: AxiosError) => {
+                    toast.error(
+                        (err?.response?.data as string) ||
+                            'Evento não econtrado!',
+                        {
+                            className:
+                                'bg-background dark:bg-dark-background text-primary dark:text-dark-primary border border-tertiary dark:border-dark-tertiary',
+                            duration: 3000,
+                        },
+                    )
+                })
+            setRender(false)
+        }
+    }, [render, eventId])
+
+    useEffect(() => {
         if (eventId && !event) {
             getEvent(eventId)
                 .then((res: AxiosResponse<Event>) => {
@@ -207,7 +229,7 @@ export const EventDetails = () => {
 
     useEffect(() => {
         if (event && expenses.length === 0) {
-            getExpenses({search: ''})
+            getExpenses({ search: '' })
                 .then((res: AxiosResponse<Expense[]>) => {
                     setExpenses(res.data.content)
                 })
@@ -325,7 +347,7 @@ export const EventDetails = () => {
                             </Button>
                         </Link>
                     )}
-                    <div className='flex justify-center text-secondary dark:text-dark-secondary font-bold text-2xl'>
+                    <div className='flex justify-center text-2xl font-bold text-secondary dark:text-dark-secondary'>
                         {event?.name}
                     </div>
                     <div className='me-4 ms-1 h-auto w-auto text-xl font-semibold text-secondary dark:text-dark-secondary'>
@@ -979,6 +1001,7 @@ export const EventDetails = () => {
                 </div>
                 {event &&
                     lastProcedure &&
+                    lastProcedure[0].destiny.id === user?.id &&
                     user &&
                     event.status === EventStatus.PENDENTE &&
                     user.role !== Role.SERVIDOR &&
@@ -988,21 +1011,28 @@ export const EventDetails = () => {
                                 userId={user.id}
                                 eventId={event.id}
                                 status={EventStatus.ACEITO}
+                                setRender={setRender}
                             />
                             <ConfirmModal
                                 userId={user.id}
                                 eventId={event.id}
                                 status={EventStatus.RECUSADO}
+                                setRender={setRender}
+
                             />
                             <ContributionModal
                                 eventId={event.id}
                                 userId={user.id}
+                                setRender={setRender}
+
                             />
                             <ProcedureModal
                                 originId={user.id}
                                 eventId={event.id}
                                 userRole={user.role as Role}
                                 unityType={UnityType.REITORIA}
+                                setRender={setRender}
+
                             />
                         </div>
                     ) : (
@@ -1011,15 +1041,21 @@ export const EventDetails = () => {
                                 userId={user.id}
                                 eventId={event.id}
                                 status={EventStatus.ACEITO}
+                                setRender={setRender}
+
                             />
                             <ConfirmModal
                                 userId={user.id}
                                 eventId={event.id}
                                 status={EventStatus.RECUSADO}
+                                setRender={setRender}
+
                             />
                             <ContributionModal
                                 eventId={event.id}
                                 userId={user.id}
+                                setRender={setRender}
+
                             />
                             <ProcedureModal
                                 originId={user.id}
@@ -1027,6 +1063,8 @@ export const EventDetails = () => {
                                 userRole={user.role as Role}
                                 destiny={lastProcedure[0].origin}
                                 unityType={UnityType.DEPARTAMENTO}
+                                setRender={setRender}
+
                             />
                         </div>
                     ))}
